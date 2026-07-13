@@ -33,7 +33,7 @@ export default function OwnerLayout({ children }) {
     if (userDataStr) {
       try {
         const userData = JSON.parse(userDataStr);
-        if (userData.name || userData.first_name) {
+        if (userData?.name || userData?.first_name) {
           setUserName(userData.name || userData.first_name);
         }
       } catch (e) {}
@@ -52,27 +52,26 @@ export default function OwnerLayout({ children }) {
   ];
 
   return (
-    <div className="h-full flex overflow-hidden w-full bg-transparent animate-fade-in">
+    <div className="h-screen flex bg-gray-50">
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div 
-          className="mobile-overlay backdrop-blur-sm bg-black/40" 
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden" 
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <aside className={`print:hidden mobile-sidebar bg-[var(--glass-bg)] backdrop-blur-xl border-r border-[var(--glass-border)] flex flex-col shadow-lg transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'open' : ''}`}>
-        <div className="h-16 flex items-center justify-between px-6 border-b border-[var(--glass-border)]">
+      <aside className={`fixed inset-y-0 left-0 z-30 w-64 bg-white border-r transform transition-transform duration-200 ease-in-out md:relative md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="h-16 flex items-center justify-between px-6 border-b">
           <div>
-            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-600">Owner Portal</h1>
-            <p className="text-xs text-[var(--muted-foreground)] font-medium">Property & tenant control</p>
+            <h1 className="text-xl font-bold text-gray-800">Owner Portal</h1>
           </div>
-          <button className="mobile-menu-btn p-1 text-[var(--muted-foreground)] hover:text-emerald-500 transition-colors" onClick={() => setIsSidebarOpen(false)}>
+          <button className="md:hidden text-gray-500" onClick={() => setIsSidebarOpen(false)}>
             <X size={24} />
           </button>
         </div>
-        <nav className="flex-1 px-4 py-6 space-y-3 overflow-y-auto">
+        <nav className="p-4 space-y-1 h-[calc(100vh-8rem)] overflow-y-auto">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -80,58 +79,56 @@ export default function OwnerLayout({ children }) {
                 key={item.name} 
                 href={item.href} 
                 onClick={() => setIsSidebarOpen(false)}
-                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 ${
+                className={`flex items-center gap-3 px-3 py-2 rounded transition-colors ${
                   isActive 
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/20 translate-x-1' 
-                    : 'hover:bg-white/40 dark:hover:bg-black/20 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:translate-x-1'
+                    ? 'bg-blue-50 text-blue-700 font-semibold' 
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`}
               >
-                <item.icon size={20} className={`${isActive ? 'text-white' : 'text-[var(--muted-foreground)] group-hover:text-emerald-500'} transition-colors`} />
-                <span className="font-semibold tracking-wide text-sm">{item.name}</span>
+                <item.icon size={20} className={isActive ? 'text-blue-700' : 'text-gray-500'} />
+                <span className="text-sm">{item.name}</span>
               </Link>
             );
           })}
         </nav>
-        <div className="p-4 border-t border-[var(--glass-border)]">
-          <Link href="/login" className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl hover:bg-red-500/10 text-red-500 transition-all duration-300 group" onClick={() => { localStorage.removeItem('user_role'); localStorage.removeItem('master_admin_token'); localStorage.removeItem('user_data'); }}>
-            <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
-            <span className="font-semibold text-sm">Logout</span>
+        <div className="p-4 border-t h-16">
+          <Link href="/login" className="flex items-center gap-3 px-3 py-2 rounded text-red-600 hover:bg-red-50 transition-colors" onClick={() => { localStorage.removeItem('user_role'); localStorage.removeItem('master_admin_token'); localStorage.removeItem('user_data'); }}>
+            <LogOut size={20} />
+            <span className="text-sm font-semibold">Logout</span>
           </Link>
         </div>
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden w-full print:overflow-visible">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="print:hidden h-16 bg-[var(--glass-bg)] backdrop-blur-lg border-b border-[var(--glass-border)] flex items-center justify-between px-4 sm:px-8 z-10 shrink-0 shadow-sm sticky top-0">
+        <header className="h-16 bg-white border-b flex items-center justify-between px-4 sm:px-8 z-10">
           <div className="flex items-center gap-4">
-            <button className="mobile-menu-btn p-2 -ml-2 text-[var(--muted-foreground)] hover:text-emerald-500 transition-colors" onClick={() => setIsSidebarOpen(true)}>
+            <button className="md:hidden text-gray-500" onClick={() => setIsSidebarOpen(true)}>
               <Menu size={24} />
             </button>
             <div className="hidden sm:block">
-              <h2 className="text-lg font-bold tracking-tight text-[var(--foreground)]">Overview</h2>
-              <p className="text-xs text-[var(--muted-foreground)] font-medium">Welcome back, {userName || 'Owner'}</p>
+              <h2 className="text-lg font-bold text-gray-800">Overview</h2>
+              <p className="text-xs text-gray-500">Welcome back, {userName || 'Owner'}</p>
             </div>
           </div>
-          <div className="flex items-center gap-5">
-            <button className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-black/20 transition-all relative group shadow-sm">
-              <Bell size={20} className="text-[var(--muted-foreground)] group-hover:text-emerald-500 transition-colors" />
-              <span className="absolute top-1.5 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-black animate-pulse"></span>
+          <div className="flex items-center gap-4">
+            <button className="text-gray-500 hover:text-gray-700 relative">
+              <Bell size={20} />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
-            <Link href="/owner/profile" className="flex items-center gap-3 pl-5 border-l border-[var(--glass-border)] group">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold shadow-md group-hover:scale-105 transition-transform">
-                {String(userName || 'O').charAt(0)}
+            <Link href="/owner/profile" className="flex items-center gap-3 pl-4 border-l">
+              <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+                {String(userName || 'O').charAt(0).toUpperCase()}
               </div>
-              <span className="font-semibold text-sm hidden md:block group-hover:text-emerald-500 transition-colors">{userName || 'Owner'}</span>
+              <span className="font-semibold text-sm text-gray-700 hidden md:block">{userName || 'Owner'}</span>
             </Link>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-8 bg-transparent">
-          <div className="animate-slide-up h-full">
-            {children}
-          </div>
+        <main className="flex-1 overflow-y-auto">
+          {children}
         </main>
       </div>
     </div>
