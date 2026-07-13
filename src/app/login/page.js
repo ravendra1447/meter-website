@@ -1,6 +1,6 @@
 'use client';
 
-import { Lock, Phone, ArrowRight, UserPlus } from "lucide-react";
+import { Lock, Phone, ArrowRight, UserPlus, Building2, Home } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import { api } from "@/lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState('tenant'); // 'tenant' or 'owner'
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -44,6 +45,8 @@ export default function LoginPage() {
       if (response.success && response.data?.token) {
         const user = response.data?.user || {};
         const normalizedRole = normalizeRole(user);
+        
+        // Ensure user is logging into the correct portal according to their selection, or just route them based on their actual role
         const portalRoute = normalizedRole === 'owner' ? '/owner' : normalizedRole === 'tenant' ? '/tenant' : '/dashboard';
 
         localStorage.setItem('master_admin_token', response.data.token);
@@ -63,18 +66,57 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat relative p-4 sm:p-8 animate-fade-in">
       {/* Overlay to dim background */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-md z-0"></div>
       
-      <div className="relative z-10 w-full max-w-md bg-white/10 dark:bg-black/40 rounded-3xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] backdrop-blur-md overflow-hidden transition-all duration-500 hover:shadow-[0_8px_40px_0_rgba(59,130,246,0.3)]">
-        <div className="p-8 sm:p-10 space-y-8">
-          <div className="text-center space-y-3">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-500 to-indigo-500 mb-2 shadow-lg">
-              <Lock className="w-8 h-8 text-white" />
+      <div className="relative z-10 w-full max-w-5xl flex flex-col md:flex-row bg-white/10 dark:bg-black/40 rounded-3xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] backdrop-blur-xl overflow-hidden transition-all duration-500">
+        
+        {/* Left Side: Dynamic Branding based on Tab */}
+        <div className={`hidden md:flex flex-col justify-center p-12 w-1/2 transition-colors duration-500 ${activeTab === 'tenant' ? 'bg-gradient-to-br from-orange-600/80 to-red-600/80' : 'bg-gradient-to-br from-emerald-600/80 to-teal-600/80'}`}>
+          <div className="space-y-6">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-white/20 backdrop-blur-md shadow-xl border border-white/30">
+              {activeTab === 'tenant' ? <Home className="w-10 h-10 text-white" /> : <Building2 className="w-10 h-10 text-white" />}
             </div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-white drop-shadow-sm">
-              Meter Portal
-            </h1>
-            <p className="text-blue-100/80 font-medium tracking-wide">Sign in to your secure account</p>
+            <h2 className="text-5xl font-black text-white tracking-tight drop-shadow-md">
+              {activeTab === 'tenant' ? 'Welcome Home.' : 'Manage Assets.'}
+            </h2>
+            <p className="text-white/90 text-lg font-medium max-w-sm leading-relaxed">
+              {activeTab === 'tenant' 
+                ? 'Sign in to manage your rentals, pay bills, and track your smart meter usage seamlessly.' 
+                : 'Sign in to oversee your properties, collect rent, and monitor your entire portfolio.'}
+            </p>
+          </div>
+        </div>
+
+        {/* Right Side: Login Form */}
+        <div className="w-full md:w-1/2 p-8 sm:p-12 space-y-8 bg-black/20 md:bg-transparent">
+          
+          <div className="text-center md:text-left space-y-2 md:hidden">
+            <h1 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-sm">Meter Portal</h1>
+            <p className="text-blue-100/80 font-medium text-sm">Sign in to your secure account</p>
+          </div>
+
+          {/* Role Toggle Tabs */}
+          <div className="flex p-1 space-x-1 bg-white/10 rounded-2xl border border-white/10 backdrop-blur-sm">
+            <button
+              onClick={() => setActiveTab('tenant')}
+              className={`w-full flex items-center justify-center gap-2 py-3 text-sm font-bold rounded-xl transition-all ${
+                activeTab === 'tenant'
+                  ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/25'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Home size={18} /> Tenant Login
+            </button>
+            <button
+              onClick={() => setActiveTab('owner')}
+              className={`w-full flex items-center justify-center gap-2 py-3 text-sm font-bold rounded-xl transition-all ${
+                activeTab === 'owner'
+                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Building2 size={18} /> Owner Login
+            </button>
           </div>
 
           {error && (
@@ -87,13 +129,13 @@ export default function LoginPage() {
             <div className="space-y-2 group">
               <label className="text-sm font-semibold text-white/90 uppercase tracking-wider ml-1">Phone / ID</label>
               <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/50 group-focus-within:text-blue-400 transition-colors" />
+                <Phone className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 transition-colors ${activeTab === 'tenant' ? 'group-focus-within:text-orange-400' : 'group-focus-within:text-emerald-400'} text-white/50`} />
                 <input
                   type="text"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="Enter your phone number"
-                  className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all backdrop-blur-sm"
+                  className={`w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 transition-all backdrop-blur-sm ${activeTab === 'tenant' ? 'focus:ring-orange-500/50 focus:border-orange-500/50' : 'focus:ring-emerald-500/50 focus:border-emerald-500/50'}`}
                   disabled={loading}
                 />
               </div>
@@ -102,13 +144,13 @@ export default function LoginPage() {
             <div className="space-y-2 group">
               <label className="text-sm font-semibold text-white/90 uppercase tracking-wider ml-1">Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/50 group-focus-within:text-blue-400 transition-colors" />
+                <Lock className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 transition-colors ${activeTab === 'tenant' ? 'group-focus-within:text-orange-400' : 'group-focus-within:text-emerald-400'} text-white/50`} />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all backdrop-blur-sm"
+                  className={`w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 transition-all backdrop-blur-sm ${activeTab === 'tenant' ? 'focus:ring-orange-500/50 focus:border-orange-500/50' : 'focus:ring-emerald-500/50 focus:border-emerald-500/50'}`}
                   disabled={loading}
                 />
               </div>
@@ -116,34 +158,37 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-between text-sm px-1">
               <label className="flex items-center gap-2.5 cursor-pointer group">
-                <input type="checkbox" className="w-4 h-4 rounded border-white/20 bg-white/10 text-blue-500 focus:ring-blue-500/50 focus:ring-offset-0 transition-all" disabled={loading} />
+                <input type="checkbox" className={`w-4 h-4 rounded border-white/20 bg-white/10 focus:ring-offset-0 transition-all ${activeTab === 'tenant' ? 'text-orange-500 focus:ring-orange-500/50' : 'text-emerald-500 focus:ring-emerald-500/50'}`} disabled={loading} />
                 <span className="text-white/80 group-hover:text-white transition-colors">Remember me</span>
               </label>
-              <a href="#" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">Forgot password?</a>
+              <a href="#" className={`font-medium transition-colors ${activeTab === 'tenant' ? 'text-orange-400 hover:text-orange-300' : 'text-emerald-400 hover:text-emerald-300'}`}>Forgot password?</a>
             </div>
 
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full group flex items-center justify-center gap-2 py-3.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl hover:from-blue-500 hover:to-indigo-500 focus:ring-4 focus:ring-blue-500/30 transition-all shadow-lg hover:shadow-blue-500/40 disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-[0.98]"
+              className={`w-full group flex items-center justify-center gap-2 py-4 px-4 text-white font-bold rounded-xl focus:ring-4 transition-all shadow-lg disabled:opacity-70 disabled:cursor-not-allowed transform active:scale-[0.98] ${
+                activeTab === 'tenant'
+                  ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 focus:ring-orange-500/30 shadow-orange-500/40'
+                  : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 focus:ring-emerald-500/30 shadow-emerald-500/40'
+              }`}
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? 'Signing in...' : `Sign In as ${activeTab === 'tenant' ? 'Tenant' : 'Owner'}`}
               {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
 
-          <div className="pt-6 border-t border-white/10 space-y-4">
-            <p className="text-center text-sm font-medium text-white/70">Don't have an account?</p>
-            <div className="grid grid-cols-2 gap-4">
-              <Link href="/register/owner" className="group flex items-center justify-center gap-2 py-3 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white text-sm font-bold transition-all hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] active:scale-[0.98]">
-                <UserPlus size={16} className="text-emerald-400 group-hover:scale-110 transition-transform" />
-                As Owner
-              </Link>
-              <Link href="/register/tenant" className="group flex items-center justify-center gap-2 py-3 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white text-sm font-bold transition-all hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] active:scale-[0.98]">
-                <UserPlus size={16} className="text-orange-400 group-hover:scale-110 transition-transform" />
-                As Tenant
-              </Link>
-            </div>
+          <div className="pt-8 border-t border-white/10 text-center space-y-4">
+            <p className="text-sm font-medium text-white/70">New to the platform?</p>
+            <Link 
+              href={activeTab === 'tenant' ? "/register/tenant" : "/register/owner"} 
+              className={`inline-flex items-center justify-center gap-2 py-3 px-6 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white text-sm font-bold transition-all active:scale-[0.98] ${
+                activeTab === 'tenant' ? 'hover:border-orange-500/50 hover:shadow-[0_0_15px_rgba(249,115,22,0.15)]' : 'hover:border-emerald-500/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+              }`}
+            >
+              <UserPlus size={16} className={activeTab === 'tenant' ? 'text-orange-400' : 'text-emerald-400'} />
+              Create a {activeTab === 'tenant' ? 'Tenant' : 'Owner'} Account
+            </Link>
           </div>
 
         </div>
@@ -151,4 +196,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

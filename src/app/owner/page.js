@@ -69,7 +69,7 @@ export default function OwnerDashboard() {
         <div className="relative z-10 max-w-5xl mx-auto">
           <p className="text-emerald-100 font-bold tracking-widest mb-2 uppercase text-xs opacity-90">Total Pending Rent</p>
           <h1 className="text-white text-5xl md:text-6xl font-extrabold tracking-tight mb-8 drop-shadow-md">
-            ₹{stats.pending_amount?.toLocaleString('en-IN') || 0}
+            ₹{Number(stats.pending_amount || 0).toLocaleString('en-IN')}
           </h1>
           
           <div className="flex items-center justify-between max-w-md mt-4 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 shadow-lg">
@@ -181,7 +181,7 @@ export default function OwnerDashboard() {
           })()}
 
           {/* Lease Expiry Alerts */}
-          {data?.expiring_leases?.length > 0 && (
+          {Array.isArray(data?.expiring_leases) && data.expiring_leases.length > 0 && (
             <div className="mb-10">
               <h2 className="text-xl font-bold mb-5 flex items-center gap-2 text-orange-600 tracking-tight">
                 <BellRing size={24} className="animate-pulse" />
@@ -235,7 +235,7 @@ export default function OwnerDashboard() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className={`font-black text-2xl ${isPaid ? 'text-emerald-500' : 'text-[var(--foreground)]'}`}>₹{p.bill_amount?.toLocaleString('en-IN') || 0}</p>
+                        <p className={`font-black text-2xl ${isPaid ? 'text-emerald-500' : 'text-[var(--foreground)]'}`}>₹{Number(p.bill_amount || 0).toLocaleString('en-IN')}</p>
                         <div className="mt-1.5">
                           <span className={`px-2.5 py-1 rounded-md text-[11px] font-extrabold uppercase tracking-widest ${isPaid ? 'bg-emerald-500/20 text-emerald-600 border border-emerald-500/20' : 'bg-orange-500/20 text-orange-600 border border-orange-500/20'}`}>
                             {p.bill_status_label || 'Due'}
