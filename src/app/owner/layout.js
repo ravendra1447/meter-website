@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, Users, Building, LogOut, Bell, IndianRupee, Bluetooth, PieChart, Zap } from "lucide-react";
+import { LayoutDashboard, Users, Building, LogOut, Bell, Banknote, Bluetooth, PieChart, Zap } from "lucide-react";
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -46,7 +46,7 @@ export default function OwnerLayout({ children }) {
     { name: 'My Tenants', href: '/owner/tenants', icon: Users },
     { name: 'Tenant Meters', href: '/owner/meters', icon: Bluetooth },
     { name: 'Tenant Helpdesk', href: '/owner/complaints', icon: Zap },
-    { name: 'Payment History', href: '/owner/payments', icon: IndianRupee },
+    { name: 'Payment History', href: '/owner/payments', icon: Banknote },
     { name: 'Expenses & PnL', href: '/owner/expenses', icon: PieChart },
     { name: 'Reports & Analytics', href: '/owner/reports', icon: PieChart },
   ];
@@ -81,11 +81,11 @@ export default function OwnerLayout({ children }) {
                 onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2 rounded transition-colors ${
                   isActive 
-                    ? 'bg-blue-50 text-blue-700 font-semibold' 
+                    ? 'bg-teal-50 text-teal-700 font-semibold' 
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`}
               >
-                <item.icon size={20} className={isActive ? 'text-blue-700' : 'text-gray-500'} />
+                <item.icon size={20} className={isActive ? 'text-teal-600' : 'text-gray-500'} />
                 <span className="text-sm">{item.name}</span>
               </Link>
             );
@@ -118,7 +118,7 @@ export default function OwnerLayout({ children }) {
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             <Link href="/owner/profile" className="flex items-center gap-3 pl-4 border-l">
-              <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+              <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-white font-bold text-sm">
                 {String(userName || 'O').charAt(0).toUpperCase()}
               </div>
               <span className="font-semibold text-sm text-gray-700 hidden md:block">{userName || 'Owner'}</span>

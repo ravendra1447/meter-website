@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import Link from "next/link";
-import { 
-  Inbox, Calendar, CreditCard, PlusCircle, PointOfSale, Building2, BellRing, User 
+import {
+  Inbox, Calendar, CreditCard, PlusCircle, Wallet, PointOfSale, Building2, BellRing, User
 } from "lucide-react";
 
 export default function OwnerDashboard() {
@@ -61,7 +61,7 @@ export default function OwnerDashboard() {
   const stats = data?.stats || {};
   const properties = Array.isArray(data?.properties) ? data.properties.filter(Boolean) : [];
   const safeStatements = Array.isArray(data?.statements) ? data.statements.filter(Boolean) : [];
-  
+
   const totalAmount = safeStatements.reduce((sum, s) => sum + Number(s.total || 0), 0);
   const collectedAmount = safeStatements.reduce((sum, s) => sum + (s.status === 'paid' ? Number(s.total || 0) : 0), 0);
   const collectionRate = totalAmount > 0 ? Math.round((collectedAmount / totalAmount) * 100) : 0;
@@ -71,7 +71,7 @@ export default function OwnerDashboard() {
       <div className="mb-8 border-b pb-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Owner Dashboard</h1>
         <p className="text-gray-600">Total Pending Rent: ₹{Number(stats.pending_amount || 0).toLocaleString('en-IN')}</p>
-        
+
         <div className="flex gap-6 mt-4 text-sm font-medium text-gray-700">
           <div><span className="font-bold text-gray-900">{stats.properties || 0}</span> Properties</div>
           <div><span className="font-bold text-gray-900">{stats.tenants || 0}</span> Tenants</div>
@@ -143,7 +143,7 @@ export default function OwnerDashboard() {
                 <div key={lease.assignment_id || Math.random()} className="border border-red-200 bg-red-50 p-4 rounded flex justify-between items-center">
                   <div>
                     <h4 className="font-bold text-gray-900">{lease.tenant_name || 'Unknown Tenant'}</h4>
-                    <p className="text-gray-600 text-sm flex items-center gap-1"><Building2 size={14}/> {lease.property_name || 'Unknown Property'}</p>
+                    <p className="text-gray-600 text-sm flex items-center gap-1"><Building2 size={14} /> {lease.property_name || 'Unknown Property'}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-red-600 font-bold">Expires in {daysLeft} days</p>
@@ -158,7 +158,7 @@ export default function OwnerDashboard() {
 
       <div>
         <h2 className="text-xl font-bold mb-4 text-gray-800">Rent Collection Status</h2>
-        
+
         {properties.length === 0 ? (
           <div className="p-8 border rounded text-center text-gray-500">
             <p className="mb-4">No properties added yet.</p>
@@ -179,7 +179,7 @@ export default function OwnerDashboard() {
                       <div>
                         <h3 className="font-bold text-lg text-gray-900">{p.name || 'Unnamed Property'}</h3>
                         <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
-                          <User size={14}/> {p.tenant_name || 'Vacant'} • <span className="bg-gray-100 px-1 py-0.5 rounded border text-xs">{p.property_code || 'N/A'}</span>
+                          <User size={14} /> {p.tenant_name || 'Vacant'} • <span className="bg-gray-100 px-1 py-0.5 rounded border text-xs">{p.property_code || 'N/A'}</span>
                         </p>
                       </div>
                     </div>
@@ -190,10 +190,10 @@ export default function OwnerDashboard() {
                       </span>
                     </div>
                   </div>
-                  
+
                   {ptId && !isPaid && (
                     <div className="mt-4 pt-4 border-t">
-                      <button 
+                      <button
                         onClick={() => sendReminder(ptId)}
                         className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center gap-1"
                       >
