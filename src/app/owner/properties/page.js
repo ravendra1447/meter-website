@@ -1,21 +1,26 @@
 'use client';
 
-import { Building, Plus, MapPin, IndianRupee, Zap, Users } from "lucide-react";
+import { Building, MapPin, Users, Plus, Search, MoreVertical, Edit, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { api } from "@/lib/api";
 
-export default function OwnerPropertiesPage() {
+export default function PropertiesPage() {
+  const [search, setSearch] = useState("");
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const res = await api.get('/owner/properties');
-        setProperties(res.data || []);
+        const response = await api.get('/owner/properties');
+        if (response.success) {
+          setProperties(response.data || []);
+        } else {
+          setError(response.message || 'Failed to load properties');
+        }
       } catch (err) {
-        console.error(err);
+        setError(err.message || 'Error fetching properties');
       } finally {
         setLoading(false);
       }
@@ -23,79 +28,111 @@ export default function OwnerPropertiesPage() {
     fetchProperties();
   }, []);
 
+  const filteredProperties = properties.filter(prop => 
+    prop.name?.toLowerCase().includes(search.toLowerCase()) || 
+    prop.property_code?.toLowerCase().includes(search.toLowerCase()) ||
+    prop.city?.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="space-y-6 relative">
-      <div className="flex justify-between items-center">
+    <div className="space-y-8 pb-20 max-w-6xl mx-auto animate-fade-in">
+      
+      {/* Header Area */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold">My Properties</h2>
-          <p className="text-[var(--muted-foreground)]">Manage your properties and units</p>
+          <h2 className="text-3xl font-black text-[var(--foreground)] tracking-tight">My Properties</h2>
+          <p className="text-[var(--muted-foreground)] font-medium mt-1">Manage all your rental properties and units.</p>
         </div>
-        <Link href="/owner/properties/add" className="flex items-center gap-2 bg-[var(--primary)] text-white px-4 py-2 rounded-lg hover:bg-[var(--primary)]/90 transition-colors shadow-md shadow-blue-500/20">
-          <Plus size={20} />
-          <span>Add Property</span>
-        </Link>
+        <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-full font-bold flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all active:scale-95">
+          <Plus size={18} /> Add Property
+        </button>
+      </div>
+
+      {/* Search and Filter */}
+      <div className="bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] p-4 rounded-2xl flex items-center gap-3 shadow-sm">
+        <Search className="text-[var(--muted-foreground)] ml-2" size={20} />
+        <input 
+          type="text" 
+          placeholder="Search by property name, code, or city..."
+          className="bg-transparent border-none outline-none text-[var(--foreground)] font-medium w-full placeholder-[var(--muted-foreground)]"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       {loading ? (
-        <div className="flex justify-center p-12">
-          <span className="animate-pulse text-[var(--muted-foreground)]">Loading properties...</span>
+        <div className="flex justify-center items-center py-20">
+          <div className="w-12 h-12 rounded-full border-4 border-emerald-500/20 border-t-emerald-500 animate-spin"></div>
         </div>
-      ) : properties.length === 0 ? (
-        <div className="bg-[var(--card)] p-8 rounded-2xl border border-[var(--border)] shadow-sm text-center">
-          <Building className="mx-auto text-[var(--muted-foreground)] mb-4" size={48} />
-          <h3 className="text-lg font-medium">No properties yet</h3>
-          <p className="text-[var(--muted-foreground)]">Add a property to start managing tenants and bills.</p>
+      ) : error ? (
+        <div className="bg-red-500/10 text-red-500 p-6 rounded-2xl border border-red-500/20 text-center font-bold">
+          {error}
+        </div>
+      ) : filteredProperties.length === 0 ? (
+        <div className="text-center py-20 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-[2rem]">
+          <Building size={48} className="mx-auto text-[var(--muted-foreground)] opacity-50 mb-4" />
+          <h3 className="text-xl font-bold text-[var(--foreground)]">No properties found</h3>
+          <p className="text-[var(--muted-foreground)] mt-2">You haven't added any properties yet or none match your search.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {properties.map(property => (
-            <Link key={property.id} href={`/owner/properties/${property.id}`} className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden hover:shadow-md transition-all hover:scale-[1.02] flex flex-col cursor-pointer block">
-              <div className="p-5 border-b border-[var(--border)] bg-[var(--accent)]/50">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-lg font-bold truncate pr-2">{property.name}</h3>
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${property.status === 'active' ? 'bg-green-500/10 text-green-500' : 'bg-orange-500/10 text-orange-500'}`}>
-                    {property.status}
-                  </span>
+          {filteredProperties.map((prop) => (
+            <div key={prop.id} className="group bg-[var(--glass-bg)] backdrop-blur-xl p-6 rounded-[2rem] border border-[var(--glass-border)] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+              {/* Decoration */}
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-colors"></div>
+              
+              <div className="flex justify-between items-start mb-4 relative z-10">
+                <div className="w-12 h-12 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Building size={24} />
                 </div>
-                <div className="flex items-center text-[var(--muted-foreground)] text-sm mb-1">
-                  <MapPin size={14} className="mr-1 shrink-0" />
-                  <span className="truncate">{property.city || property.address || 'No address provided'}</span>
-                </div>
-                <div className="text-xs font-mono text-[var(--muted-foreground)]">Code: {property.property_code}</div>
+                <button className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors p-2">
+                  <MoreVertical size={20} />
+                </button>
               </div>
               
-              <div className="p-5 space-y-4 flex-1">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]">
-                    <div className="text-xs text-[var(--muted-foreground)] mb-1 flex items-center gap-1">
-                      <IndianRupee size={12}/> Rent
-                    </div>
-                    <div className="font-semibold">{property.monthly_rent}</div>
-                  </div>
-                  <div className="bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]">
-                    <div className="text-xs text-[var(--muted-foreground)] mb-1 flex items-center gap-1">
-                      <IndianRupee size={12}/> Deposit
-                    </div>
-                    <div className="font-semibold">{property.security_deposit_amount}</div>
-                  </div>
-                  <div className="bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]">
-                    <div className="text-xs text-[var(--muted-foreground)] mb-1 flex items-center gap-1">
-                      <Users size={12}/> Tenants
-                    </div>
-                    <div className="font-semibold">{property.active_tenants_count || 0}</div>
-                  </div>
-                  <div className="bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]">
-                    <div className="text-xs text-[var(--muted-foreground)] mb-1 flex items-center gap-1">
-                      <Zap size={12}/> Meters
-                    </div>
-                    <div className="font-semibold">{property.electricity_meters_count || 0}</div>
-                  </div>
+              <h3 className="text-xl font-bold text-[var(--foreground)] mb-1 relative z-10">{prop.name}</h3>
+              <span className="inline-block bg-[var(--accent)] text-[var(--muted-foreground)] text-xs font-bold px-2.5 py-0.5 rounded uppercase tracking-wider mb-4 relative z-10">
+                {prop.property_code || prop.code || 'N/A'}
+              </span>
+
+              <div className="space-y-3 mb-6 relative z-10">
+                <div className="flex items-center gap-3 text-sm font-medium text-[var(--muted-foreground)]">
+                  <MapPin size={16} className="text-emerald-500/70" />
+                  <span className="truncate">{prop.address || prop.city || 'No address provided'}</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm font-medium text-[var(--muted-foreground)]">
+                  <Users size={16} className="text-blue-500/70" />
+                  <span>{prop.occupied_units || prop.occupied || 0} / {prop.total_units || prop.units || 0} Units Occupied</span>
                 </div>
               </div>
-            </Link>
+
+              {/* Occupancy Bar */}
+              <div className="w-full bg-[var(--accent)] h-2 rounded-full overflow-hidden mb-6 relative z-10">
+                <div 
+                  className={`h-full rounded-full ${(prop.occupied_units || prop.occupied || 0) === (prop.total_units || prop.units || 1) ? 'bg-emerald-500' : 'bg-blue-500'}`} 
+                  style={{ width: `${Math.min(((prop.occupied_units || prop.occupied || 0) / Math.max((prop.total_units || prop.units || 1), 1)) * 100, 100)}%` }}
+                ></div>
+              </div>
+
+              <div className="flex justify-between items-center pt-4 border-t border-[var(--glass-border)] relative z-10">
+                <div>
+                  <p className="text-xs font-bold text-[var(--muted-foreground)] uppercase tracking-wider">Monthly Rev</p>
+                  <p className="font-bold text-[var(--foreground)]">₹{(prop.revenue || 0).toLocaleString('en-IN')}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button className="p-2 bg-[var(--accent)] hover:bg-emerald-500/10 text-[var(--foreground)] hover:text-emerald-500 rounded-xl transition-colors">
+                    <Edit size={16} />
+                  </button>
+                  <button className="p-2 bg-[var(--accent)] hover:bg-red-500/10 text-[var(--foreground)] hover:text-red-500 rounded-xl transition-colors">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       )}
+
     </div>
   );
 }

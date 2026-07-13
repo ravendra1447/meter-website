@@ -13,6 +13,7 @@ export default function AddTenantModal({ isOpen, onClose, propertyId, onSuccess 
     mobile: '',
     email: '',
     password: '',
+    confirm_password: '',
     move_in_date: new Date().toISOString().split('T')[0],
     accepted_payment_methods: 'cash,online'
   });
@@ -26,8 +27,28 @@ export default function AddTenantModal({ isOpen, onClose, propertyId, onSuccess 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.mobile || !formData.password) {
+
+    const normalizedMobile = formData.mobile.replace(/\D/g, '').slice(-10);
+    const password = formData.password?.trim();
+    const confirmPassword = formData.confirm_password?.trim();
+
+    if (!formData.name || !normalizedMobile || !password || !confirmPassword) {
       setError('Please fill all required fields');
+      return;
+    }
+
+    if (normalizedMobile.length !== 10) {
+      setError('Phone number must be exactly 10 digits');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Password and confirm password do not match');
       return;
     }
 
@@ -36,14 +57,22 @@ export default function AddTenantModal({ isOpen, onClose, propertyId, onSuccess 
     try {
       await api.post(`/owner/tenants`, {
         ...formData,
+        mobile: normalizedMobile,
+        password,
+        confirm_password: confirmPassword,
         property_id: propertyId
       });
-      
+
       onClose();
       if (onSuccess) onSuccess();
     } catch (err) {
       console.error(err);
-      setError(err.message || 'Failed to add tenant');
+      const message = err.message || 'Failed to add tenant';
+      if (message.toLowerCase().includes('exists') || message.toLowerCase().includes('duplicate') || message.toLowerCase().includes('already')) {
+        setError('This phone number is already registered. Please use a different number.');
+      } else {
+        setError(message);
+      }
     } finally {
       setLoading(false);
     }
@@ -111,11 +140,24 @@ export default function AddTenantModal({ isOpen, onClose, propertyId, onSuccess 
               <label className="text-sm font-semibold">Temporary Password *</label>
               <input 
                 required 
-                type="text" 
+                type="password" 
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Give this to tenant to login" 
+                placeholder="At least 6 characters" 
+                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] transition-all" 
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold">Confirm Password *</label>
+              <input 
+                required 
+                type="password" 
+                name="confirm_password"
+                value={formData.confirm_password}
+                onChange={handleChange}
+                placeholder="Re-enter password" 
                 className="w-full bg-[var(--background)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] transition-all" 
               />
             </div>

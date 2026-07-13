@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://184.168.126.71:8000/api';
 
 /**
  * Custom fetch wrapper to handle authorization and API errors.
@@ -39,17 +39,19 @@ async function fetchApi(endpoint, options = {}) {
       if (response.status === 401 && typeof window !== 'undefined') {
         localStorage.removeItem('master_admin_token');
         localStorage.removeItem('user_role');
+        localStorage.removeItem('user_data');
         window.location.href = '/login';
         // Return a promise that never resolves to halt execution while redirecting
-        return new Promise(() => {});
+        return new Promise(() => { });
       }
-      
+
       // Handle forbidden specifically (wrong role)
       if (response.status === 403 && typeof window !== 'undefined') {
         localStorage.removeItem('master_admin_token');
         localStorage.removeItem('user_role');
+        localStorage.removeItem('user_data');
         window.location.href = '/login';
-        return new Promise(() => {});
+        return new Promise(() => { });
       }
 
       throw new Error(data?.message || 'Something went wrong');

@@ -1,6 +1,6 @@
 'use client';
 
-import { Activity, IndianRupee, Clock, Zap, MapPin, Building2, User, Phone, CheckCircle2, FileText } from "lucide-react";
+import { Activity, IndianRupee, Clock, Zap, MapPin, Building2, User, Phone, CheckCircle2, FileText, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import PrintableInvoice from "@/components/PrintableInvoice";
@@ -26,17 +26,19 @@ export default function TenantDashboard() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-[70vh] gap-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--primary)]"></div>
-        <p className="text-[var(--muted-foreground)]">Loading your dashboard...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <div className="w-12 h-12 rounded-full border-4 border-indigo-500/20 border-t-indigo-500 animate-spin"></div>
+        <p className="text-[var(--muted-foreground)] font-medium">Loading your portal...</p>
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="flex flex-col items-center justify-center h-[70vh]">
-        <div className="bg-red-500/10 text-red-500 p-4 rounded-lg mb-4">{error || 'No active property linked.'}</div>
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <div className="bg-red-500/10 text-red-500 border border-red-500/20 backdrop-blur-md px-6 py-4 rounded-2xl font-medium shadow-sm">
+          {error || 'No active property linked to this account.'}
+        </div>
       </div>
     );
   }
@@ -45,122 +47,152 @@ export default function TenantDashboard() {
   const isPaid = statement?.status === 'paid';
 
   return (
-    <div className="space-y-6 pb-20 max-w-5xl mx-auto">
-      <div className="flex justify-between items-center">
+    <div className="space-y-8 pb-20 max-w-6xl mx-auto animate-fade-in">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold">Tenant Dashboard</h2>
-          <p className="text-[var(--muted-foreground)]">Welcome to your property portal.</p>
+          <h2 className="text-3xl md:text-4xl font-black text-[var(--foreground)] tracking-tight">Welcome Home.</h2>
+          <p className="text-[var(--muted-foreground)] font-medium mt-2 text-lg">Manage your rent, electricity, and bills in one place.</p>
+        </div>
+        <div className="flex items-center gap-2 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] px-4 py-2 rounded-2xl shadow-sm">
+          <Building2 size={18} className="text-indigo-500" />
+          <span className="font-bold text-sm text-[var(--foreground)]">{property?.name || 'Property'}</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* Left Column: Property & Owner details */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="bg-[var(--card)] p-6 rounded-3xl border border-[var(--border)] shadow-sm">
-            <div className="w-16 h-16 bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center mb-4">
-              <Building2 size={32} />
-            </div>
-            <h3 className="text-xl font-bold mb-1">{property?.name || 'Property'}</h3>
-            <p className="text-sm font-mono text-[var(--muted-foreground)] mb-4">{property?.property_code}</p>
+        {/* Main Statement Card - Takes up 8 columns */}
+        <div className="lg:col-span-8 space-y-8">
+          <div className={`relative overflow-hidden rounded-[2.5rem] text-white shadow-2xl transition-all duration-500 ${isPaid ? 'bg-gradient-to-br from-emerald-500 to-teal-800' : 'bg-gradient-to-br from-indigo-600 via-purple-700 to-indigo-900'}`}>
+            {/* Background elements */}
+            <div className="absolute top-0 right-0 w-full h-full opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
+            <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/20 rounded-full blur-[80px]"></div>
+            <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-black/30 rounded-full blur-[80px]"></div>
             
-            <div className="flex items-start gap-3 text-sm text-[var(--muted-foreground)]">
-              <MapPin size={16} className="shrink-0 mt-0.5" />
-              <p>{property?.address}, {property?.city}, {property?.state} - {property?.pincode}</p>
-            </div>
-            
-            <hr className="my-6 border-[var(--border)]" />
-            
-            <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--muted-foreground)] mb-4">Owner Details</h4>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-orange-500/10 text-orange-500 rounded-full flex items-center justify-center">
-                <User size={24} />
+            <div className="relative z-10 p-8 md:p-12">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full">
+                  <Clock size={16} className={isPaid ? 'text-emerald-300' : 'text-orange-300'} />
+                  <span className="text-sm font-bold tracking-widest uppercase text-white/90">
+                    {isPaid ? 'Fully Paid' : `Due: ${statement?.due_date}`}
+                  </span>
+                </div>
+                
+                {isPaid && (
+                  <div className="flex items-center gap-2 text-emerald-200">
+                    <CheckCircle2 size={24} />
+                    <span className="font-bold text-lg">Settled</span>
+                  </div>
+                )}
               </div>
-              <div>
-                <p className="font-semibold">{property?.owner_name || 'Owner'}</p>
-                <div className="flex items-center gap-1.5 text-sm text-[var(--muted-foreground)]">
-                  <Phone size={14} />
-                  <span>{property?.owner_mobile || 'N/A'}</span>
+              
+              <div className="mb-12">
+                <p className="text-white/70 text-sm font-bold uppercase tracking-widest mb-3">Current Balance</p>
+                <div className="flex items-baseline gap-2">
+                  <h2 className="text-6xl md:text-7xl font-black drop-shadow-lg tracking-tighter">₹{statement?.total?.toLocaleString('en-IN') || 0}</h2>
                 </div>
               </div>
-            </div>
-          </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-black/10 backdrop-blur-md rounded-3xl p-6 border border-white/10">
+                <div>
+                  <p className="text-white/60 text-xs font-bold uppercase tracking-wider mb-1">Rent</p>
+                  <p className="text-xl font-bold text-white">₹{statement?.rent || 0}</p>
+                </div>
+                <div>
+                  <p className="text-white/60 text-xs font-bold uppercase tracking-wider mb-1">Light</p>
+                  <p className="text-xl font-bold text-white">₹{statement?.electricity_amount || 0}</p>
+                </div>
+                <div>
+                  <p className="text-white/60 text-xs font-bold uppercase tracking-wider mb-1">Water</p>
+                  <p className="text-xl font-bold text-white">₹{statement?.water_amount || 0}</p>
+                </div>
+                <div>
+                  <p className="text-white/60 text-xs font-bold uppercase tracking-wider mb-1">Maint.</p>
+                  <p className="text-xl font-bold text-white">₹{statement?.maintenance || 0}</p>
+                </div>
+              </div>
 
-          <div className="bg-[var(--card)] p-6 rounded-3xl border border-[var(--border)] shadow-sm">
-            <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
-              <Zap className="text-yellow-500" size={20} /> Electricity Usage
-            </h4>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[var(--muted-foreground)] text-sm mb-1">This Month</p>
-                <p className="text-2xl font-bold">{stats?.monthUsage || 0} <span className="text-sm font-normal text-[var(--muted-foreground)]">kWh</span></p>
-              </div>
-              <div className="w-16 h-16 rounded-full border-4 border-[var(--primary)] flex items-center justify-center font-bold">
-                {stats?.usagePercent || 0}%
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Statement & Payments */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className={`p-8 rounded-3xl text-white shadow-lg relative overflow-hidden ${isPaid ? 'bg-gradient-to-br from-green-600 to-emerald-800' : 'bg-gradient-to-br from-indigo-900 to-purple-900'}`}>
-            <div className="absolute top-0 right-0 p-4">
-              {isPaid ? (
-                <div className="bg-white/20 text-white px-3 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1 backdrop-blur-md">
-                  <CheckCircle2 size={14}/> Paid
-                </div>
-              ) : (
-                <div className="bg-orange-500/30 text-orange-200 px-3 py-1 rounded-full text-xs font-bold uppercase backdrop-blur-md">
-                  Due: {statement?.due_date}
-                </div>
-              )}
-            </div>
-            
-            <p className="text-white/70 text-sm font-medium uppercase tracking-wider mb-2">Current Statement</p>
-            <h2 className="text-5xl font-black mb-8">₹{statement?.total?.toLocaleString('en-IN') || 0}</h2>
-            
-            <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm">
-              <h4 className="text-sm font-bold text-white/80 uppercase tracking-wider mb-3">Breakdown</h4>
-              <div className="space-y-2 text-sm text-white/90">
-                <div className="flex justify-between">
-                  <span>Rent</span>
-                  <span className="font-medium">₹{statement?.rent || 0}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Maintenance</span>
-                  <span className="font-medium">₹{statement?.maintenance || 0}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Water</span>
-                  <span className="font-medium">₹{statement?.water_amount || 0}</span>
-                </div>
-                <div className="flex justify-between text-yellow-300">
-                  <span>Light Bill</span>
-                  <span className="font-medium">₹{statement?.electricity_amount || 0}</span>
-                </div>
-              </div>
-            </div>
-
-            {!isPaid && (
-              <div className="mt-6 flex flex-wrap gap-4 print:hidden">
-                <button className="bg-white text-[var(--background)] px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-100 transition-colors shadow-lg shadow-white/20">
-                  <IndianRupee size={18}/> Pay Now
+              <div className="mt-10 flex flex-wrap gap-4 items-center print:hidden">
+                {!isPaid && (
+                  <button className="bg-white text-indigo-950 px-8 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-gray-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 active:scale-95 text-lg">
+                    <IndianRupee size={22} className="text-indigo-600" /> Pay Securely
+                  </button>
+                )}
+                <button 
+                  onClick={() => window.print()}
+                  className="bg-white/10 hover:bg-white/20 text-white px-6 py-4 rounded-2xl font-bold flex items-center gap-2 transition-all backdrop-blur-md border border-white/20 hover:border-white/40 active:scale-95"
+                >
+                  <FileText size={18}/> Get Invoice
                 </button>
               </div>
-            )}
-            
-            <div className="mt-6 print:hidden">
-              <button 
-                onClick={() => window.print()}
-                className="bg-white/10 hover:bg-white/20 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-colors backdrop-blur-md border border-white/20"
-              >
-                <FileText size={18}/> Download Invoice
-              </button>
             </div>
           </div>
         </div>
 
+        {/* Right side sidebars - Takes up 4 columns */}
+        <div className="lg:col-span-4 space-y-6">
+          
+          {/* Usage Stats */}
+          <div className="group bg-[var(--glass-bg)] backdrop-blur-xl p-8 rounded-[2rem] border border-[var(--glass-border)] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="flex items-center justify-between mb-8">
+              <div className="p-3 bg-yellow-500/10 text-yellow-500 rounded-2xl">
+                <Zap size={24} className="group-hover:animate-pulse" />
+              </div>
+              <span className="bg-[var(--accent)]/50 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)]">Electricity</span>
+            </div>
+            
+            <div className="space-y-1 mb-8">
+              <p className="text-[var(--muted-foreground)] text-sm font-bold uppercase tracking-wider">This Month's Usage</p>
+              <div className="flex items-baseline gap-2">
+                <p className="text-5xl font-black text-[var(--foreground)] tracking-tighter">{stats?.monthUsage || 0}</p>
+                <span className="text-lg font-bold text-[var(--muted-foreground)]">kWh</span>
+              </div>
+            </div>
+
+            <div className="w-full bg-[var(--accent)] h-3 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full" style={{ width: `${stats?.usagePercent || 0}%` }}></div>
+            </div>
+            <p className="mt-3 text-right text-xs font-bold text-[var(--muted-foreground)]">{stats?.usagePercent || 0}% of average</p>
+          </div>
+
+          {/* Property Info */}
+          <div className="bg-[var(--glass-bg)] backdrop-blur-xl p-8 rounded-[2rem] border border-[var(--glass-border)] shadow-sm hover:shadow-xl transition-all duration-300">
+            <h3 className="text-lg font-extrabold text-[var(--foreground)] mb-6 flex items-center justify-between">
+              Property Details
+              <Building2 size={20} className="text-[var(--muted-foreground)] opacity-50" />
+            </h3>
+            
+            <div className="space-y-5">
+              <div className="flex items-start gap-4">
+                <div className="mt-1 p-2 bg-[var(--accent)] rounded-xl text-[var(--muted-foreground)]">
+                  <MapPin size={18} />
+                </div>
+                <div>
+                  <p className="font-bold text-[var(--foreground)]">{property?.property_code}</p>
+                  <p className="text-sm font-medium text-[var(--muted-foreground)] leading-relaxed mt-1">
+                    {property?.address}, {property?.city}, {property?.state} - {property?.pincode}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="mt-1 p-2 bg-[var(--accent)] rounded-xl text-[var(--muted-foreground)]">
+                  <User size={18} />
+                </div>
+                <div>
+                  <p className="text-sm font-bold uppercase tracking-wider text-[var(--muted-foreground)] mb-1">Landlord</p>
+                  <p className="font-bold text-[var(--foreground)]">{property?.owner_name || 'Owner'}</p>
+                  <a href={`tel:${property?.owner_mobile}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 mt-1 transition-colors">
+                    <Phone size={14} />
+                    {property?.owner_mobile || 'N/A'}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
       </div>
 
       {/* Hidden Printable Invoice */}
