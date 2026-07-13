@@ -110,7 +110,7 @@ export default function OwnerLayout({ children }) {
             </button>
             <div className="hidden sm:block">
               <h2 className="text-lg font-bold tracking-tight text-[var(--foreground)]">Overview</h2>
-              <p className="text-xs text-[var(--muted-foreground)] font-medium">Welcome back, {userName}</p>
+              <p className="text-xs text-[var(--muted-foreground)] font-medium">Welcome back, {userName || 'Owner'}</p>
             </div>
           </div>
           <div className="flex items-center gap-5">
@@ -120,9 +120,9 @@ export default function OwnerLayout({ children }) {
             </button>
             <Link href="/owner/profile" className="flex items-center gap-3 pl-5 border-l border-[var(--glass-border)] group">
               <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold shadow-md group-hover:scale-105 transition-transform">
-                {userName.charAt(0)}
+                {String(userName || 'O').charAt(0)}
               </div>
-              <span className="font-semibold text-sm hidden md:block group-hover:text-emerald-500 transition-colors">{userName}</span>
+              <span className="font-semibold text-sm hidden md:block group-hover:text-emerald-500 transition-colors">{userName || 'Owner'}</span>
             </Link>
           </div>
         </header>

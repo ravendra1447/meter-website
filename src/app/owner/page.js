@@ -56,7 +56,7 @@ export default function OwnerDashboard() {
   }
 
   const stats = data?.stats || {};
-  const properties = data?.properties || [];
+  const properties = Array.isArray(data?.properties) ? data.properties : [];
 
   return (
     <div className="-mt-6 -mx-4 md:-mx-8 animate-fade-in">
@@ -136,8 +136,9 @@ export default function OwnerDashboard() {
 
           {/* Financial Health Visual Chart */}
           {(() => {
-            const totalAmount = (data?.statements || []).reduce((sum, s) => sum + Number(s.total || 0), 0);
-            const collectedAmount = (data?.statements || []).reduce((sum, s) => sum + (s.status === 'paid' ? Number(s.total || 0) : 0), 0);
+            const safeStatements = Array.isArray(data?.statements) ? data.statements : [];
+            const totalAmount = safeStatements.reduce((sum, s) => sum + Number(s.total || 0), 0);
+            const collectedAmount = safeStatements.reduce((sum, s) => sum + (s.status === 'paid' ? Number(s.total || 0) : 0), 0);
             const collectionRate = totalAmount > 0 ? Math.round((collectedAmount / totalAmount) * 100) : 0;
             
             return (

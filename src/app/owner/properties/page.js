@@ -28,7 +28,7 @@ export default function PropertiesPage() {
     fetchProperties();
   }, []);
 
-  const filteredProperties = properties.filter(prop => 
+  const filteredProperties = (Array.isArray(properties) ? properties : []).filter(prop => 
     prop.name?.toLowerCase().includes(search.toLowerCase()) || 
     prop.property_code?.toLowerCase().includes(search.toLowerCase()) ||
     prop.city?.toLowerCase().includes(search.toLowerCase())
@@ -117,7 +117,7 @@ export default function PropertiesPage() {
               <div className="flex justify-between items-center pt-4 border-t border-[var(--glass-border)] relative z-10">
                 <div>
                   <p className="text-xs font-bold text-[var(--muted-foreground)] uppercase tracking-wider">Monthly Rev</p>
-                  <p className="font-bold text-[var(--foreground)]">₹{(prop.revenue || 0).toLocaleString('en-IN')}</p>
+                  <p className="font-bold text-[var(--foreground)]">₹{Number(prop.revenue || 0).toLocaleString('en-IN')}</p>
                 </div>
                 <div className="flex gap-2">
                   <button className="p-2 bg-[var(--accent)] hover:bg-emerald-500/10 text-[var(--foreground)] hover:text-emerald-500 rounded-xl transition-colors">
