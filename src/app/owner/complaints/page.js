@@ -51,14 +51,14 @@ export default function OwnerComplaintsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] py-8 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-6xl mx-auto space-y-8 pb-20">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-sm border border-white/40">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
           <div>
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 flex items-center gap-3">
-              <MessageSquare className="text-indigo-500" size={32} /> Tenant Helpdesk
+            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight flex items-center gap-3">
+              <MessageSquare className="text-slate-400" size={32} /> Tenant Helpdesk
             </h1>
             <p className="text-slate-500 mt-2 font-medium">Manage and resolve issues reported by your tenants efficiently.</p>
           </div>
@@ -69,7 +69,7 @@ export default function OwnerComplaintsPage() {
             <input 
               type="text" 
               placeholder="Search tickets, tenants..."
-              className="w-full pl-12 pr-4 py-3.5 bg-white/80 backdrop-blur-md border border-slate-200 rounded-full focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-800 placeholder-slate-400 transition-all shadow-sm font-medium"
+              className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-full focus:outline-none focus:ring-4 focus:ring-slate-500/10 focus:border-slate-500 text-slate-800 placeholder-slate-400 transition-all shadow-sm font-medium"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />

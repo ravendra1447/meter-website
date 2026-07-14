@@ -77,14 +77,14 @@ export default function ExpensesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] py-8 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-sm border border-white/40">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
           <div>
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 flex items-center gap-3">
-              <Receipt className="text-rose-500" size={32} /> Expenses & PnL Tracker
+            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight flex items-center gap-3">
+              <Receipt className="text-slate-400" size={32} /> Expenses & PnL Tracker
             </h1>
             <p className="text-slate-500 mt-2 font-medium">Monitor and manage all your property maintenance costs.</p>
           </div>
@@ -96,7 +96,7 @@ export default function ExpensesPage() {
             </div>
             <button 
               onClick={() => setIsAdding(!isAdding)}
-              className="bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white px-6 py-3 rounded-full flex items-center gap-2 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+              className="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-bold shadow-sm transition-all duration-300"
             >
               {isAdding ? 'Cancel Entry' : <><Plus size={20} /> Add Expense</>}
             </button>
@@ -105,10 +105,9 @@ export default function ExpensesPage() {
 
         {/* Add Expense Form (Animated collapse could be added, using simple conditional for now) */}
         {isAdding && (
-          <div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 animate-in fade-in slide-in-from-top-4 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-rose-400 to-orange-400"></div>
+          <div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-200 animate-in fade-in slide-in-from-top-4 relative overflow-hidden">
             <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-              <PieChart size={20} className="text-rose-500"/> Record New Expense
+              <PieChart size={20} className="text-slate-400"/> Record New Expense
             </h3>
             
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -190,7 +189,7 @@ export default function ExpensesPage() {
               </div>
               
               <div className="pt-2 flex justify-end">
-                <button type="submit" className="px-8 py-3.5 bg-gradient-to-r from-rose-500 to-orange-500 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-rose-500/30 transform hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                <button type="submit" className="px-8 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl shadow-sm transition-all flex items-center gap-2">
                   <CheckCircle2 size={18} /> Save Expense
                 </button>
               </div>
@@ -218,7 +217,7 @@ export default function ExpensesPage() {
                 <div key={exp.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-center justify-between p-4 gap-6 group relative overflow-hidden">
                   
                   {/* Subtle edge highlight */}
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-rose-400 to-orange-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-rose-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
                   <div className="flex items-center gap-5 min-w-[280px] pl-2 md:pl-4">
                     <div className="w-12 h-12 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center shrink-0">

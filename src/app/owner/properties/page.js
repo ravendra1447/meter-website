@@ -41,14 +41,14 @@ export default function PropertiesPage() {
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Area */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-sm border border-white/40">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
           <div>
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 flex items-center gap-3">
-              <Home className="text-blue-500" size={32} /> My Properties
+            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight flex items-center gap-3">
+              <Home className="text-slate-400" size={32} /> My Properties
             </h1>
             <p className="text-slate-500 mt-2 font-medium">Manage all your rental properties and units in one place.</p>
           </div>
-          <button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-full flex items-center gap-2 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
+          <button className="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-bold shadow-sm transition-all duration-300">
             <Plus size={20} /> Add Property
           </button>
         </div>
@@ -132,7 +132,7 @@ export default function PropertiesPage() {
                     </div>
                     <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden shadow-inner">
                       <div 
-                        className={`h-full rounded-full relative ${isFullyOccupied ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 'bg-gradient-to-r from-blue-400 to-indigo-500'}`}
+                        className={`h-full rounded-full relative ${isFullyOccupied ? 'bg-emerald-500' : 'bg-slate-800'}`}
                         style={{ width: `${occupancyRate}%`, transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}
                       ></div>
                     </div>

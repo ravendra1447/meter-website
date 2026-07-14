@@ -48,27 +48,27 @@ export default function TenantComplaintsPage() {
     <div className="max-w-4xl mx-auto space-y-6 pb-20">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">Helpdesk & Complaints</h2>
-          <p className="text-[var(--muted-foreground)]">Report issues to your property owner.</p>
+          <h2 className="text-2xl font-bold text-slate-800">Helpdesk & Complaints</h2>
+          <p className="text-slate-500">Report issues to your property owner.</p>
         </div>
         <button 
           onClick={() => setIsAdding(!isAdding)}
-          className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+          className="bg-slate-800 text-white px-4 py-2 rounded-xl hover:bg-slate-700 transition-colors flex items-center gap-2 font-bold"
         >
           {isAdding ? 'Cancel' : <><Plus size={20} /> New Issue</>}
         </button>
       </div>
 
       {isAdding && (
-        <form onSubmit={handleSubmit} className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--border)] space-y-4">
-          <h3 className="font-bold text-lg mb-4">Report an Issue</h3>
+        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h3 className="font-bold text-lg text-slate-800 mb-4">Report an Issue</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Issue Category</label>
+              <label className="block text-sm font-medium mb-1 text-slate-700">Issue Category</label>
               <select 
                 value={formData.category} 
                 onChange={e => setFormData({...formData, category: e.target.value})}
-                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500"
               >
                 <option>Plumbing</option>
                 <option>Electrical</option>
@@ -78,52 +78,52 @@ export default function TenantComplaintsPage() {
               </select>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1">Short Title</label>
+              <label className="block text-sm font-medium mb-1 text-slate-700">Short Title</label>
               <input 
                 type="text" 
                 value={formData.title} 
                 onChange={e => setFormData({...formData, title: e.target.value})}
                 placeholder="e.g. Tap leaking in kitchen"
-                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500"
                 required
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1">Detailed Description</label>
+              <label className="block text-sm font-medium mb-1 text-slate-700">Detailed Description</label>
               <textarea 
                 value={formData.description} 
                 onChange={e => setFormData({...formData, description: e.target.value})}
                 placeholder="Describe the problem in detail..."
-                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2 h-32 resize-none"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 h-32 resize-none focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500"
                 required
               />
             </div>
           </div>
-          <button type="submit" className="bg-[var(--primary)] text-white px-6 py-2 rounded-lg font-bold">Submit Issue</button>
+          <button type="submit" className="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-xl font-bold shadow-sm transition-all">Submit Issue</button>
         </form>
       )}
 
       <div className="space-y-4">
         {complaints.length === 0 ? (
-          <div className="text-center py-10 bg-[var(--card)] rounded-2xl border border-[var(--border)]">
-            <MessageSquare className="mx-auto text-[var(--muted-foreground)] opacity-30 mb-3" size={48} />
-            <p className="text-[var(--muted-foreground)]">No complaints submitted yet.</p>
+          <div className="text-center py-10 bg-white rounded-2xl border border-slate-200">
+            <MessageSquare className="mx-auto text-slate-300 mb-3" size={48} />
+            <p className="text-slate-500">No complaints submitted yet.</p>
           </div>
         ) : complaints.map(c => (
-          <div key={c.id} className="bg-[var(--card)] p-6 rounded-2xl border border-[var(--border)] shadow-sm flex items-start gap-4">
-            <div className={`p-3 rounded-full ${c.status === 'resolved' ? 'bg-green-500/10 text-green-500' : 'bg-orange-500/10 text-orange-500'}`}>
+          <div key={c.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
+            <div className={`p-3 rounded-full ${c.status === 'resolved' ? 'bg-emerald-50 text-emerald-500' : 'bg-orange-50 text-orange-500'}`}>
               {c.status === 'resolved' ? <CheckCircle2 size={24} /> : <AlertCircle size={24} />}
             </div>
             <div className="flex-1">
               <div className="flex justify-between items-start mb-2">
-                <h4 className="font-bold text-lg">{c.title}</h4>
-                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${c.status === 'resolved' ? 'bg-green-500/10 text-green-600' : 'bg-orange-500/10 text-orange-600'}`}>
+                <h4 className="font-bold text-lg text-slate-800">{c.title}</h4>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${c.status === 'resolved' ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'}`}>
                   {c.status}
                 </span>
               </div>
-              <p className="text-sm font-medium text-[var(--primary)] mb-2">{c.category}</p>
-              <p className="text-[var(--muted-foreground)] text-sm">{c.description}</p>
-              <p className="text-xs text-[var(--muted-foreground)] mt-4">Submitted on: {new Date(c.created_at).toLocaleString('en-IN')}</p>
+              <p className="text-sm font-medium text-slate-500 mb-2">{c.category}</p>
+              <p className="text-slate-600 text-sm">{c.description}</p>
+              <p className="text-xs text-slate-400 mt-4">Submitted on: {new Date(c.created_at).toLocaleString('en-IN')}</p>
             </div>
           </div>
         ))}

@@ -80,14 +80,14 @@ export default function OwnerPaymentsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] py-8 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-8 pb-20">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-sm border border-white/40">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
           <div>
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 flex items-center gap-3">
-              <Banknote className="text-emerald-500" size={32} /> Payments Center
+            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight flex items-center gap-3">
+              <Banknote className="text-slate-400" size={32} /> Payments Center
             </h1>
             <p className="text-slate-500 mt-2 font-medium">Manage collections, pending approvals, and payment history.</p>
           </div>
@@ -107,7 +107,7 @@ export default function OwnerPaymentsPage() {
             </div>
             <button 
               onClick={() => setIsCollectModalOpen(true)}
-              className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-6 py-3 rounded-full flex items-center justify-center gap-2 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+              className="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-xl flex items-center justify-center gap-2 font-bold shadow-sm transition-all duration-300"
             >
               <Plus size={20} /> Collect Payment
             </button>

@@ -81,32 +81,32 @@ export default function OwnerDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] py-8 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-8 pb-20">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-sm border border-white/40">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
           <div>
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">
+            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
               Owner Dashboard
             </h1>
             <p className="text-slate-500 mt-2 font-medium flex items-center gap-2">
-              <TrendingUp size={18} className="text-blue-500" />
+              <TrendingUp size={18} className="text-slate-400" />
               Total Pending Rent: <span className="text-slate-800 font-bold">₹{Number(stats.pending_amount || 0).toLocaleString('en-IN')}</span>
             </p>
           </div>
           
           <div className="flex gap-4 mt-6 md:mt-0">
-            <div className="px-6 py-3 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center transform transition hover:-translate-y-1 hover:shadow-md duration-300">
+            <div className="px-6 py-3 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col items-center justify-center">
               <span className="text-2xl font-bold text-slate-800">{stats.properties || 0}</span>
-              <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Properties</span>
+              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Properties</span>
             </div>
-            <div className="px-6 py-3 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center transform transition hover:-translate-y-1 hover:shadow-md duration-300">
+            <div className="px-6 py-3 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col items-center justify-center">
               <span className="text-2xl font-bold text-slate-800">{stats.tenants || 0}</span>
-              <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Tenants</span>
+              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Tenants</span>
             </div>
-            <div className="px-6 py-3 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center transform transition hover:-translate-y-1 hover:shadow-md duration-300">
+            <div className="px-6 py-3 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col items-center justify-center">
               <span className="text-2xl font-bold text-slate-800">{stats.meters || 0}</span>
-              <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Meters</span>
+              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Meters</span>
             </div>
           </div>
         </div>
@@ -114,24 +114,21 @@ export default function OwnerDashboard() {
         {/* Quick Actions */}
         <div>
           <h2 className="text-xl font-bold mb-4 text-slate-800 px-2 flex items-center gap-2">
-            <Activity size={20} className="text-indigo-500" /> Quick Actions
+            <Activity size={20} className="text-slate-400" /> Quick Actions
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
-              { href: "/owner/tenants", icon: Inbox, label: "Join Requests", color: "from-blue-500 to-cyan-400" },
-              { href: "/owner/billing-schedules", icon: Calendar, label: "Billing Schedules", color: "from-purple-500 to-pink-500" },
-              { href: "/owner/payments", icon: CreditCard, label: "Pending Payments", color: "from-orange-400 to-rose-400" },
-              { href: "/owner/meters", icon: PlusCircle, label: "Smart Meters", color: "from-emerald-400 to-teal-500" },
-              { href: "/owner/add-payment", icon: Banknote, label: "Collect Payment", color: "from-indigo-500 to-blue-600" }
+              { href: "/owner/tenants", icon: Inbox, label: "Join Requests" },
+              { href: "/owner/billing-schedules", icon: Calendar, label: "Billing Schedules" },
+              { href: "/owner/payments", icon: CreditCard, label: "Pending Payments" },
+              { href: "/owner/meters", icon: PlusCircle, label: "Smart Meters" },
+              { href: "/owner/add-payment", icon: Banknote, label: "Collect Payment" }
             ].map((action, idx) => (
-              <Link key={idx} href={action.href} className="group relative overflow-hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:border-transparent transition-all duration-300 transform hover:-translate-y-1">
-                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${action.color} opacity-5 rounded-bl-full transition-opacity group-hover:opacity-10`} />
-                <div className="flex flex-col items-center gap-3 relative z-10">
-                  <div className={`p-4 rounded-2xl bg-gradient-to-br ${action.color} text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                    <action.icon size={24} />
-                  </div>
-                  <span className="text-sm font-bold text-slate-700 text-center group-hover:text-slate-900 transition-colors">{action.label}</span>
+              <Link key={idx} href={action.href} className="group bg-white p-6 rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all duration-300 flex flex-col items-center gap-3">
+                <div className="p-3 rounded-xl bg-slate-100 text-slate-500 group-hover:bg-slate-800 group-hover:text-white transition-colors duration-300">
+                  <action.icon size={24} />
                 </div>
+                <span className="text-sm font-bold text-slate-700 text-center group-hover:text-slate-900 transition-colors">{action.label}</span>
               </Link>
             ))}
           </div>
@@ -139,7 +136,7 @@ export default function OwnerDashboard() {
 
         {/* Financial Health */}
         <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative overflow-hidden">
+          <div className="lg:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-slate-200 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-green-50 to-transparent rounded-bl-full opacity-50 pointer-events-none" />
             <div className="flex justify-between items-center mb-8 relative z-10">
               <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
@@ -183,7 +180,7 @@ export default function OwnerDashboard() {
 
           {/* Expiring Leases */}
           {Array.isArray(data?.expiring_leases) && data.expiring_leases.filter(Boolean).length > 0 && (
-            <div className="bg-gradient-to-b from-rose-50 to-white rounded-3xl p-8 shadow-sm border border-rose-100 flex flex-col">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 flex flex-col">
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-rose-600">
                 <BellRing size={20} className="animate-bounce" /> Lease Expirations
               </h2>
@@ -225,7 +222,7 @@ export default function OwnerDashboard() {
               </div>
               <h3 className="text-lg font-bold text-slate-700 mb-2">No properties added yet</h3>
               <p className="text-slate-500 mb-6 max-w-md mx-auto">Get started by adding your first property to track rent, tenants, and smart meters effortlessly.</p>
-              <Link href="/owner/properties/add" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300">
+              <Link href="/owner/properties/add" className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 text-white font-semibold rounded-full hover:shadow-md hover:bg-slate-700 transition-all duration-300">
                 <PlusCircle size={18} /> Add Property
               </Link>
             </div>

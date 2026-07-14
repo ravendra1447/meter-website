@@ -86,33 +86,29 @@ export default function ReportsPage() {
   const collectionRate = stats.total > 0 ? Math.round((stats.collected / stats.total) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] font-sans pb-20">
+    <div className="min-h-screen bg-slate-50 font-sans pb-20">
       
       {/* Hero Header Region */}
-      <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 px-6 py-16 md:py-20 md:px-12 shadow-2xl relative overflow-hidden">
-        {/* Decorative background blur */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] pointer-events-none transform translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-500/20 rounded-full blur-[80px] pointer-events-none transform -translate-x-1/2 translate-y-1/2"></div>
-
-        <div className="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+      <div className="bg-white border-b border-slate-200 px-6 py-12 md:py-16 md:px-12 mb-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           <div>
-            <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight flex items-center gap-4">
-              <PieChart className="text-indigo-400" size={40} />
+            <h1 className="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight flex items-center gap-4">
+              <PieChart className="text-slate-400" size={40} />
               Analytics & Reports
             </h1>
-            <p className="text-indigo-200/80 text-lg max-w-xl font-medium">Detailed financial insights, collection rates, and property performance metrics for your portfolio.</p>
+            <p className="text-slate-500 text-lg max-w-xl font-medium">Detailed financial insights, collection rates, and property performance metrics for your portfolio.</p>
           </div>
           <button 
             onClick={exportToCSV}
-            className="flex items-center gap-3 bg-white hover:bg-slate-50 text-indigo-900 px-8 py-4 rounded-full font-extrabold transition-all shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_50px_rgba(255,255,255,0.2)] transform hover:-translate-y-1"
+            className="flex items-center gap-3 bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-sm"
           >
-            <FileSpreadsheet size={22} className="text-indigo-500" />
+            <FileSpreadsheet size={22} className="text-white" />
             <span>Export to Excel (CSV)</span>
           </button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -143,20 +139,18 @@ export default function ReportsPage() {
             <p className="text-sm font-medium text-slate-500 bg-slate-50 inline-block px-3 py-1 rounded-lg">Amount successfully received</p>
           </div>
 
-          <div className="bg-gradient-to-br from-indigo-500 to-blue-600 p-8 rounded-3xl shadow-xl shadow-indigo-500/20 transform transition hover:-translate-y-1 duration-300 relative overflow-hidden text-white">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
-            <div className="flex justify-between items-start mb-6 relative z-10">
+          <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 transform transition hover:-translate-y-1 duration-300">
+            <div className="flex justify-between items-start mb-6">
               <div>
-                <p className="text-indigo-100 text-xs font-bold uppercase tracking-widest mb-2">Collection Rate</p>
-                <h3 className="text-4xl font-black text-white">{collectionRate}%</h3>
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">Collection Rate</p>
+                <h3 className="text-4xl font-black text-slate-800">{collectionRate}%</h3>
               </div>
-              <div className="p-4 bg-white/20 backdrop-blur-md rounded-2xl text-white">
+              <div className="p-4 bg-indigo-50 text-indigo-600 rounded-2xl">
                 <Activity size={28} />
               </div>
             </div>
-            <div className="w-full bg-indigo-900/40 h-2.5 rounded-full mt-2 relative z-10 shadow-inner">
-              <div className="bg-white h-2.5 rounded-full relative" style={{ width: `${collectionRate}%` }}>
-                <div className="absolute inset-0 bg-white/50 blur-[2px]"></div>
+            <div className="w-full bg-slate-100 h-2.5 rounded-full mt-2 relative z-10 shadow-inner">
+              <div className="bg-indigo-500 h-2.5 rounded-full relative" style={{ width: `${collectionRate}%` }}>
               </div>
             </div>
           </div>
