@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import Link from "next/link";
 import {
-  Inbox, Calendar, CreditCard, PlusCircle, Wallet, PointOfSale, Building2, BellRing, User
+  Inbox, Calendar, CreditCard, PlusCircle, Wallet, Banknote, Building2, BellRing, User
 } from "lucide-react";
 
 export default function OwnerDashboard() {
@@ -99,7 +99,7 @@ export default function OwnerDashboard() {
             <span className="text-sm font-medium text-gray-800">Smart Meters</span>
           </Link>
           <Link href="/owner/add-payment" className="p-4 border rounded shadow-sm hover:bg-gray-50 flex flex-col items-center gap-2">
-            <PointOfSale size={20} className="text-gray-600" />
+            <Banknote size={20} className="text-gray-600" />
             <span className="text-sm font-medium text-gray-800">Collect Payment</span>
           </Link>
         </div>
