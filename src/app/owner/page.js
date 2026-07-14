@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import Link from "next/link";
 import {
-  Inbox, Calendar, CreditCard, PlusCircle, Wallet, Banknote, Building2, BellRing, User
+  Inbox, Calendar, CreditCard, PlusCircle, Wallet, Banknote, Building2, BellRing, User,
+  TrendingUp, Activity, PieChart, CheckCircle2, AlertCircle, ArrowRight
 } from "lucide-react";
 
 export default function OwnerDashboard() {
@@ -44,16 +45,28 @@ export default function OwnerDashboard() {
 
   if (loading) {
     return (
-      <div className="p-8">
-        <p className="text-gray-600">Loading Dashboard...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f0f4f8] to-[#d9e2ec]">
+        <div className="flex flex-col items-center animate-pulse">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4 shadow-lg"></div>
+          <p className="text-slate-600 font-medium tracking-wide">Loading Premium Dashboard...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-8">
-        <div className="bg-red-50 text-red-600 p-4 rounded border border-red-200">{error}</div>
+      <div className="min-h-screen flex items-center justify-center bg-[#f0f4f8] p-8">
+        <div className="bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl p-8 max-w-md w-full border border-red-100 text-center transform transition-all hover:scale-105 duration-300">
+          <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle size={32} />
+          </div>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Oops! Something went wrong</h2>
+          <p className="text-red-600 font-medium">{error}</p>
+          <button onClick={loadData} className="mt-6 px-6 py-2 bg-slate-800 text-white rounded-full hover:bg-slate-700 transition-colors shadow-md">
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
@@ -67,146 +80,229 @@ export default function OwnerDashboard() {
   const collectionRate = totalAmount > 0 ? Math.round((collectedAmount / totalAmount) * 100) : 0;
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-8">
-      <div className="mb-8 border-b pb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Owner Dashboard</h1>
-        <p className="text-gray-600">Total Pending Rent: ₹{Number(stats.pending_amount || 0).toLocaleString('en-IN')}</p>
-
-        <div className="flex gap-6 mt-4 text-sm font-medium text-gray-700">
-          <div><span className="font-bold text-gray-900">{stats.properties || 0}</span> Properties</div>
-          <div><span className="font-bold text-gray-900">{stats.tenants || 0}</span> Tenants</div>
-          <div><span className="font-bold text-gray-900">{stats.meters || 0}</span> Meters</div>
-        </div>
-      </div>
-
-      <div className="mb-10">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">Quick Actions</h2>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <Link href="/owner/tenants" className="p-4 border rounded shadow-sm hover:bg-gray-50 flex flex-col items-center gap-2">
-            <Inbox size={20} className="text-gray-600" />
-            <span className="text-sm font-medium text-gray-800">Join Requests</span>
-          </Link>
-          <Link href="/owner/billing-schedules" className="p-4 border rounded shadow-sm hover:bg-gray-50 flex flex-col items-center gap-2">
-            <Calendar size={20} className="text-gray-600" />
-            <span className="text-sm font-medium text-gray-800">Billing Schedules</span>
-          </Link>
-          <Link href="/owner/payments" className="p-4 border rounded shadow-sm hover:bg-gray-50 flex flex-col items-center gap-2">
-            <CreditCard size={20} className="text-gray-600" />
-            <span className="text-sm font-medium text-gray-800">Pending Payments</span>
-          </Link>
-          <Link href="/owner/meters" className="p-4 border rounded shadow-sm hover:bg-gray-50 flex flex-col items-center gap-2">
-            <PlusCircle size={20} className="text-gray-600" />
-            <span className="text-sm font-medium text-gray-800">Smart Meters</span>
-          </Link>
-          <Link href="/owner/add-payment" className="p-4 border rounded shadow-sm hover:bg-gray-50 flex flex-col items-center gap-2">
-            <Banknote size={20} className="text-gray-600" />
-            <span className="text-sm font-medium text-gray-800">Collect Payment</span>
-          </Link>
-        </div>
-      </div>
-
-      <div className="mb-10">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">Financial Health</h2>
-          <Link href="/owner/reports" className="text-blue-600 hover:underline text-sm">View Reports</Link>
-        </div>
-        <div className="border p-6 rounded shadow-sm bg-white">
-          <div className="grid grid-cols-3 gap-4 mb-4 text-center divide-x">
-            <div>
-              <p className="text-xs text-gray-500 uppercase">Total Expected</p>
-              <p className="text-2xl font-bold">₹{totalAmount.toLocaleString('en-IN')}</p>
+    <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] py-8 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white/60 backdrop-blur-xl p-8 rounded-3xl shadow-sm border border-white/40">
+          <div>
+            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">
+              Owner Dashboard
+            </h1>
+            <p className="text-slate-500 mt-2 font-medium flex items-center gap-2">
+              <TrendingUp size={18} className="text-blue-500" />
+              Total Pending Rent: <span className="text-slate-800 font-bold">₹{Number(stats.pending_amount || 0).toLocaleString('en-IN')}</span>
+            </p>
+          </div>
+          
+          <div className="flex gap-4 mt-6 md:mt-0">
+            <div className="px-6 py-3 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center transform transition hover:-translate-y-1 hover:shadow-md duration-300">
+              <span className="text-2xl font-bold text-slate-800">{stats.properties || 0}</span>
+              <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Properties</span>
             </div>
-            <div>
-              <p className="text-xs text-gray-500 uppercase">Collected</p>
-              <p className="text-2xl font-bold text-green-600">₹{collectedAmount.toLocaleString('en-IN')}</p>
+            <div className="px-6 py-3 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center transform transition hover:-translate-y-1 hover:shadow-md duration-300">
+              <span className="text-2xl font-bold text-slate-800">{stats.tenants || 0}</span>
+              <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Tenants</span>
             </div>
-            <div>
-              <p className="text-xs text-gray-500 uppercase">Collection Rate</p>
-              <p className="text-2xl font-bold text-blue-600">{collectionRate}%</p>
+            <div className="px-6 py-3 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center transform transition hover:-translate-y-1 hover:shadow-md duration-300">
+              <span className="text-2xl font-bold text-slate-800">{stats.meters || 0}</span>
+              <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Meters</span>
             </div>
           </div>
-          <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-            <div className="h-full bg-green-500" style={{ width: `${collectionRate}%` }}></div>
-          </div>
         </div>
-      </div>
 
-      {Array.isArray(data?.expiring_leases) && data.expiring_leases.filter(Boolean).length > 0 && (
-        <div className="mb-10">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-red-600">
-            <BellRing size={20} /> Lease Expirations
+        {/* Quick Actions */}
+        <div>
+          <h2 className="text-xl font-bold mb-4 text-slate-800 px-2 flex items-center gap-2">
+            <Activity size={20} className="text-indigo-500" /> Quick Actions
           </h2>
-          <div className="space-y-3">
-            {data.expiring_leases.filter(Boolean).map(lease => {
-              const daysLeft = lease.agreement_to ? Math.ceil((new Date(lease.agreement_to) - new Date()) / (1000 * 60 * 60 * 24)) : 0;
-              return (
-                <div key={lease.assignment_id || Math.random()} className="border border-red-200 bg-red-50 p-4 rounded flex justify-between items-center">
-                  <div>
-                    <h4 className="font-bold text-gray-900">{lease.tenant_name || 'Unknown Tenant'}</h4>
-                    <p className="text-gray-600 text-sm flex items-center gap-1"><Building2 size={14} /> {lease.property_name || 'Unknown Property'}</p>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {[
+              { href: "/owner/tenants", icon: Inbox, label: "Join Requests", color: "from-blue-500 to-cyan-400" },
+              { href: "/owner/billing-schedules", icon: Calendar, label: "Billing Schedules", color: "from-purple-500 to-pink-500" },
+              { href: "/owner/payments", icon: CreditCard, label: "Pending Payments", color: "from-orange-400 to-rose-400" },
+              { href: "/owner/meters", icon: PlusCircle, label: "Smart Meters", color: "from-emerald-400 to-teal-500" },
+              { href: "/owner/add-payment", icon: Banknote, label: "Collect Payment", color: "from-indigo-500 to-blue-600" }
+            ].map((action, idx) => (
+              <Link key={idx} href={action.href} className="group relative overflow-hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:border-transparent transition-all duration-300 transform hover:-translate-y-1">
+                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${action.color} opacity-5 rounded-bl-full transition-opacity group-hover:opacity-10`} />
+                <div className="flex flex-col items-center gap-3 relative z-10">
+                  <div className={`p-4 rounded-2xl bg-gradient-to-br ${action.color} text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <action.icon size={24} />
                   </div>
-                  <div className="text-right">
-                    <p className="text-red-600 font-bold">Expires in {daysLeft} days</p>
-                    <p className="text-gray-500 text-sm">{lease.agreement_to ? new Date(lease.agreement_to).toLocaleDateString('en-IN') : 'N/A'}</p>
-                  </div>
+                  <span className="text-sm font-bold text-slate-700 text-center group-hover:text-slate-900 transition-colors">{action.label}</span>
                 </div>
-              );
-            })}
+              </Link>
+            ))}
           </div>
         </div>
-      )}
 
-      <div>
-        <h2 className="text-xl font-bold mb-4 text-gray-800">Rent Collection Status</h2>
-
-        {properties.length === 0 ? (
-          <div className="p-8 border rounded text-center text-gray-500">
-            <p className="mb-4">No properties added yet.</p>
-            <Link href="/owner/properties/add" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Add Property</Link>
+        {/* Financial Health */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-green-50 to-transparent rounded-bl-full opacity-50 pointer-events-none" />
+            <div className="flex justify-between items-center mb-8 relative z-10">
+              <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <PieChart size={20} className="text-green-500" /> Financial Health
+              </h2>
+              <Link href="/owner/reports" className="text-sm font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 group">
+                View Reports <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-6 mb-8 relative z-10">
+              <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Total Expected</p>
+                <p className="text-3xl font-extrabold text-slate-800">₹{totalAmount.toLocaleString('en-IN')}</p>
+              </div>
+              <div className="p-6 bg-green-50 rounded-2xl border border-green-100">
+                <p className="text-xs font-bold text-green-600/70 uppercase tracking-wider mb-2">Collected</p>
+                <p className="text-3xl font-extrabold text-green-600">₹{collectedAmount.toLocaleString('en-IN')}</p>
+              </div>
+              <div className="p-6 bg-blue-50 rounded-2xl border border-blue-100">
+                <p className="text-xs font-bold text-blue-600/70 uppercase tracking-wider mb-2">Collection Rate</p>
+                <p className="text-3xl font-extrabold text-blue-600">{collectionRate}%</p>
+              </div>
+            </div>
+            
+            <div className="relative z-10">
+              <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
+                <span>Progress</span>
+                <span className="text-slate-800">{collectionRate}%</span>
+              </div>
+              <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden shadow-inner">
+                <div 
+                  className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full relative" 
+                  style={{ width: `${collectionRate}%`, transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}
+                >
+                  <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]"></div>
+                </div>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="space-y-4">
-            {properties.map(p => {
-              const ptId = p.property_tenant_id;
-              const isPaid = p.bill_status === 'paid';
-              return (
-                <div key={p.id || Math.random()} className="border p-5 rounded shadow-sm bg-white">
-                  <div className="flex justify-between items-start">
-                    <div className="flex gap-4">
-                      <div className="p-3 bg-gray-100 rounded text-gray-600">
-                        <Building2 size={24} />
+
+          {/* Expiring Leases */}
+          {Array.isArray(data?.expiring_leases) && data.expiring_leases.filter(Boolean).length > 0 && (
+            <div className="bg-gradient-to-b from-rose-50 to-white rounded-3xl p-8 shadow-sm border border-rose-100 flex flex-col">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-rose-600">
+                <BellRing size={20} className="animate-bounce" /> Lease Expirations
+              </h2>
+              <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-1 max-h-[300px]">
+                {data.expiring_leases.filter(Boolean).map(lease => {
+                  const daysLeft = lease.agreement_to ? Math.ceil((new Date(lease.agreement_to) - new Date()) / (1000 * 60 * 60 * 24)) : 0;
+                  return (
+                    <div key={lease.assignment_id || Math.random()} className="bg-white p-4 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-bold text-slate-800">{lease.tenant_name || 'Unknown Tenant'}</h4>
+                        <span className="px-2 py-1 bg-rose-100 text-rose-700 text-xs font-bold rounded-md">
+                          {daysLeft} days left
+                        </span>
                       </div>
+                      <p className="text-slate-500 text-sm flex items-center gap-1.5 mb-1">
+                        <Building2 size={14} className="text-slate-400" /> {lease.property_name || 'Unknown Property'}
+                      </p>
+                      <p className="text-slate-400 text-xs font-medium">
+                        Expires: {lease.agreement_to ? new Date(lease.agreement_to).toLocaleDateString('en-IN') : 'N/A'}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Rent Collection Status */}
+        <div>
+          <h2 className="text-xl font-bold mb-6 text-slate-800 px-2 flex items-center gap-2">
+            <CheckCircle2 size={20} className="text-blue-500" /> Rent Collection Status
+          </h2>
+
+          {properties.length === 0 ? (
+            <div className="bg-white p-12 rounded-3xl border border-dashed border-slate-300 text-center shadow-sm">
+              <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Building2 size={32} className="text-slate-400" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-700 mb-2">No properties added yet</h3>
+              <p className="text-slate-500 mb-6 max-w-md mx-auto">Get started by adding your first property to track rent, tenants, and smart meters effortlessly.</p>
+              <Link href="/owner/properties/add" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300">
+                <PlusCircle size={18} /> Add Property
+              </Link>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {properties.map(p => {
+                const ptId = p.property_tenant_id;
+                const isPaid = p.bill_status === 'paid';
+                return (
+                  <div key={p.id || Math.random()} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 group">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="flex gap-4">
+                        <div className={`p-4 rounded-2xl ${isPaid ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-500'} transition-colors`}>
+                          <Building2 size={24} />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-1">{p.name || 'Unnamed Property'}</h3>
+                          <p className="text-sm text-slate-500 flex items-center gap-1.5 mt-1">
+                            <User size={14} className="text-slate-400" /> {p.tenant_name || 'Vacant'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-slate-50 rounded-2xl p-4 flex justify-between items-center mb-4 border border-slate-100/50">
                       <div>
-                        <h3 className="font-bold text-lg text-gray-900">{p.name || 'Unnamed Property'}</h3>
-                        <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
-                          <User size={14} /> {p.tenant_name || 'Vacant'} • <span className="bg-gray-100 px-1 py-0.5 rounded border text-xs">{p.property_code || 'N/A'}</span>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Due Amount</p>
+                        <p className={`font-extrabold text-2xl ${isPaid ? 'text-green-600' : 'text-slate-800'}`}>
+                          ₹{Number(p.bill_amount || 0).toLocaleString('en-IN')}
                         </p>
                       </div>
+                      <div className="text-right">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${isPaid ? 'bg-green-100 text-green-700 ring-1 ring-green-500/20' : 'bg-red-100 text-red-700 ring-1 ring-red-500/20'}`}>
+                          {p.bill_status_label || 'Due'}
+                        </span>
+                        <p className="text-xs text-slate-400 mt-2 font-medium">{p.property_code || 'N/A'}</p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className={`font-bold text-xl ${isPaid ? 'text-green-600' : 'text-gray-900'}`}>₹{Number(p.bill_amount || 0).toLocaleString('en-IN')}</p>
-                      <span className={`inline-block mt-1 px-2 py-0.5 rounded text-xs font-bold uppercase ${isPaid ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                        {p.bill_status_label || 'Due'}
-                      </span>
-                    </div>
-                  </div>
 
-                  {ptId && !isPaid && (
-                    <div className="mt-4 pt-4 border-t">
+                    {ptId && !isPaid && (
                       <button
                         onClick={() => sendReminder(ptId)}
-                        className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center gap-1"
+                        className="w-full py-3 bg-white border border-rose-200 text-rose-600 rounded-xl text-sm font-bold hover:bg-rose-50 hover:border-rose-300 transition-all flex items-center justify-center gap-2 group-hover:shadow-sm"
                       >
-                        <BellRing size={16} /> Send Payment Reminder
+                        <BellRing size={16} className="group-hover:animate-wiggle" /> Send Payment Reminder
                       </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
+      
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes shimmer {
+          100% { transform: translateX(100%); }
+        }
+        @keyframes wiggle {
+          0%, 100% { transform: rotate(-3deg); }
+          50% { transform: rotate(3deg); }
+        }
+        .animate-wiggle {
+          animation: wiggle 0.3s ease-in-out infinite;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: #e2e8f0;
+          border-radius: 10px;
+        }
+      `}} />
     </div>
   );
 }

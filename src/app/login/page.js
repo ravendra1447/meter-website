@@ -46,7 +46,6 @@ export default function LoginPage() {
         const user = response.data?.user || {};
         const normalizedRole = normalizeRole(user);
         
-        // Route based on actual role
         let portalRoute = '/dashboard';
         if (normalizedRole === 'owner') portalRoute = '/owner';
         else if (normalizedRole === 'tenant') portalRoute = '/tenant';
@@ -67,129 +66,138 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#f8fcfb] p-4">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#fafafa] p-4 font-sans selection:bg-slate-200">
       
-      <div className="w-full max-w-md bg-white border border-teal-100 rounded-xl shadow-sm overflow-hidden">
+      {/* Subtle background decoration */}
+      <div className="absolute top-0 left-0 w-full h-[40vh] bg-gradient-to-b from-slate-100 to-transparent -z-10 pointer-events-none"></div>
+
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_8px_40px_-12px_rgba(0,0,0,0.08)] border border-slate-100 overflow-hidden transform transition-all">
         
         {/* Header */}
-        <div className="p-6 text-center border-b border-teal-50 bg-[#f4faf9]">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-teal-100 text-teal-600 mb-4">
-            <Lock size={24} />
+        <div className="px-8 pt-10 pb-6 text-center">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 text-slate-700 mb-5 shadow-sm">
+            <Lock size={26} strokeWidth={1.5} />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">Meter Portal</h1>
-          <p className="text-gray-500 text-sm mt-1">Sign in to your secure account</p>
+          <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">Welcome Back</h1>
+          <p className="text-slate-500 text-sm mt-2 font-medium">Please enter your details to sign in.</p>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="px-8 pb-8 space-y-7">
           
           {/* Tabs */}
-          <div className="flex p-1 space-x-1 bg-gray-50 rounded-lg border border-gray-100">
+          <div className="flex p-1.5 space-x-1 bg-slate-50/80 rounded-2xl border border-slate-100 backdrop-blur-sm">
             <button
               onClick={() => setActiveTab('tenant')}
-              className={`w-full flex flex-col items-center justify-center gap-1 py-2 text-xs font-semibold rounded-md transition-colors ${
+              className={`w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 ${
                 activeTab === 'tenant'
-                  ? 'bg-white text-teal-700 shadow-sm border border-teal-100'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                  ? 'bg-white text-slate-800 shadow-sm ring-1 ring-slate-200/50'
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100/50'
               }`}
             >
-              <Home size={18} /> Tenant
+              <Home size={16} strokeWidth={2} /> Tenant
             </button>
             <button
               onClick={() => setActiveTab('owner')}
-              className={`w-full flex flex-col items-center justify-center gap-1 py-2 text-xs font-semibold rounded-md transition-colors ${
+              className={`w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 ${
                 activeTab === 'owner'
-                  ? 'bg-white text-teal-700 shadow-sm border border-teal-100'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                  ? 'bg-white text-slate-800 shadow-sm ring-1 ring-slate-200/50'
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100/50'
               }`}
             >
-              <Building2 size={18} /> Owner
+              <Building2 size={16} strokeWidth={2} /> Owner
             </button>
             <button
               onClick={() => setActiveTab('master')}
-              className={`w-full flex flex-col items-center justify-center gap-1 py-2 text-xs font-semibold rounded-md transition-colors ${
+              className={`w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 ${
                 activeTab === 'master'
-                  ? 'bg-white text-teal-700 shadow-sm border border-teal-100'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                  ? 'bg-white text-slate-800 shadow-sm ring-1 ring-slate-200/50'
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100/50'
               }`}
             >
-              <ShieldCheck size={18} /> Master
+              <ShieldCheck size={16} strokeWidth={2} /> Master
             </button>
           </div>
 
           {error && (
-            <div className="p-3 rounded bg-red-50 border border-red-100 text-red-600 text-sm font-medium text-center">
+            <div className="p-4 rounded-2xl bg-red-50/50 border border-red-100 text-red-600 text-sm font-medium text-center animate-in fade-in slide-in-from-top-2">
               {error}
             </div>
           )}
 
           <form onSubmit={handleLogin} className="space-y-5">
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-gray-700">Phone Number / ID</label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-slate-700 ml-1">Phone Number</label>
+              <div className="relative group">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" strokeWidth={1.5} />
                 <input
                   type="text"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="Enter your phone number"
-                  className="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 text-gray-800 placeholder:text-gray-400 transition-all"
+                  placeholder="Enter your registered number"
+                  className="w-full pl-12 pr-4 py-3.5 bg-slate-50/50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-300 focus:bg-white text-slate-800 placeholder:text-slate-400 transition-all text-sm font-medium"
                   disabled={loading}
                 />
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-gray-700">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <div className="space-y-2">
+              <div className="flex items-center justify-between ml-1">
+                <label className="text-sm font-bold text-slate-700">Password</label>
+                <a href="#" className="text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors">Forgot password?</a>
+              </div>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" strokeWidth={1.5} />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 text-gray-800 placeholder:text-gray-400 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 bg-slate-50/50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-300 focus:bg-white text-slate-800 placeholder:text-slate-400 transition-all text-sm font-medium tracking-wider"
                   disabled={loading}
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500" disabled={loading} />
-                <span className="text-gray-600">Remember me</span>
-              </label>
-              <a href="#" className="text-teal-600 hover:text-teal-700 font-medium">Forgot password?</a>
+            <div className="pt-2">
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-slate-900 text-white font-semibold rounded-2xl hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/20 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-slate-200 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Signing in...
+                  </span>
+                ) : (
+                  <>
+                    Sign In as {activeTab === 'tenant' ? 'Tenant' : activeTab === 'owner' ? 'Owner' : 'Master'}
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </>
+                )}
+              </button>
             </div>
-
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-500/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Signing in...' : `Sign In as ${activeTab === 'tenant' ? 'Tenant' : activeTab === 'owner' ? 'Owner' : 'Master'}`}
-              {!loading && <ArrowRight className="w-4 h-4" />}
-            </button>
           </form>
 
         </div>
 
         {activeTab !== 'master' && (
-          <div className="p-6 bg-[#f8fcfb] border-t border-teal-50 text-center space-y-4">
-            <p className="text-sm text-gray-600">Don't have an account?</p>
+          <div className="px-8 py-6 bg-slate-50/50 border-t border-slate-100 text-center space-y-4">
+            <p className="text-sm font-medium text-slate-500">New to the platform?</p>
             <div className="grid grid-cols-2 gap-3">
               <Link 
                 href="/register/tenant" 
-                className="flex items-center justify-center gap-2 py-2.5 px-4 bg-white border border-teal-100 rounded-lg text-teal-700 text-sm font-medium hover:bg-teal-50 transition-colors"
+                className="flex items-center justify-center gap-2 py-3 px-4 bg-white border border-slate-200 rounded-xl text-slate-700 text-sm font-bold hover:border-slate-300 hover:bg-slate-50 hover:shadow-sm transition-all"
               >
-                <UserPlus size={16} className="text-teal-500" />
-                As Tenant
+                <UserPlus size={16} className="text-slate-400" />
+                Register Tenant
               </Link>
               <Link 
                 href="/register/owner" 
-                className="flex items-center justify-center gap-2 py-2.5 px-4 bg-white border border-teal-100 rounded-lg text-teal-700 text-sm font-medium hover:bg-teal-50 transition-colors"
+                className="flex items-center justify-center gap-2 py-3 px-4 bg-white border border-slate-200 rounded-xl text-slate-700 text-sm font-bold hover:border-slate-300 hover:bg-slate-50 hover:shadow-sm transition-all"
               >
-                <UserPlus size={16} className="text-teal-500" />
-                As Owner
+                <UserPlus size={16} className="text-slate-400" />
+                Register Owner
               </Link>
             </div>
           </div>
