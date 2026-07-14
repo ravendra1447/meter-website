@@ -92,7 +92,7 @@ export default function PropertiesPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="flex flex-col gap-4">
             {filteredProperties.map((prop) => {
               const total = Math.max(prop.total_units || prop.units || 1, 1);
               const occupied = prop.occupied_units || prop.occupied || 0;
@@ -100,64 +100,63 @@ export default function PropertiesPage() {
               const isFullyOccupied = occupancyRate === 100;
 
               return (
-                <div key={prop.id || Math.random()} className="bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 group overflow-hidden flex flex-col relative">
+                <div key={prop.id || Math.random()} className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden flex flex-col md:flex-row items-center relative p-4 gap-6">
                   
-                  {/* Card Header Background */}
-                  <div className="h-24 bg-gradient-to-r from-slate-50 to-blue-50/30 absolute top-0 left-0 right-0 z-0 border-b border-slate-100/50"></div>
-
-                  <div className="p-6 relative z-10 flex flex-col h-full">
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="w-14 h-14 bg-white shadow-sm border border-slate-100 text-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <Building size={28} />
-                      </div>
-                      <div className="flex gap-2">
-                        <span className="inline-flex items-center bg-white border border-slate-200 text-slate-700 shadow-sm text-xs font-extrabold px-3 py-1.5 rounded-full tracking-wide">
+                  {/* Left: Icon & Title */}
+                  <div className="flex items-center gap-4 min-w-[280px]">
+                    <div className="w-14 h-14 bg-blue-50 border border-blue-100 text-blue-600 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                      <Building size={26} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-extrabold text-slate-800 mb-1 group-hover:text-blue-600 transition-colors line-clamp-1">{prop.name || 'Unnamed Property'}</h3>
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center bg-slate-50 border border-slate-200 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
                           {prop.property_code || prop.code || 'N/A'}
                         </span>
-                        <button className="w-8 h-8 flex items-center justify-center bg-white border border-slate-100 rounded-full text-slate-400 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 transition-colors shadow-sm">
-                          <MoreVertical size={16} />
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <h3 className="text-xl font-extrabold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors line-clamp-1">{prop.name || 'Unnamed Property'}</h3>
-
-                    <div className="space-y-3 mb-8">
-                      <div className="flex items-center gap-2.5 text-sm text-slate-500 font-medium">
-                        <MapPin size={18} className="text-slate-400" />
-                        <span className="truncate">{prop.address || prop.city || 'No address provided'}</span>
-                      </div>
-                      <div className="flex items-center gap-2.5 text-sm text-slate-500 font-medium">
-                        <Users size={18} className="text-slate-400" />
-                        <span><strong className="text-slate-700">{occupied}</strong> of <strong className="text-slate-700">{total}</strong> Units Occupied</span>
-                      </div>
-                    </div>
-
-                    {/* Occupancy Bar */}
-                    <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-6 shadow-inner">
-                      <div 
-                        className={`h-full rounded-full relative ${isFullyOccupied ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 'bg-gradient-to-r from-blue-400 to-indigo-500'}`}
-                        style={{ width: `${occupancyRate}%`, transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}
-                      >
-                        <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]"></div>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between items-end pt-5 border-t border-slate-100 mt-auto">
-                      <div>
-                        <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1"><TrendingUp size={12}/> Monthly Rev</p>
-                        <p className="font-extrabold text-xl text-slate-800">₹{Number(prop.revenue || 0).toLocaleString('en-IN')}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <button className="w-10 h-10 flex items-center justify-center bg-slate-50 hover:bg-blue-50 text-slate-500 hover:text-blue-600 rounded-xl border border-slate-200 hover:border-blue-200 transition-all">
-                          <Edit size={18} />
-                        </button>
-                        <button className="w-10 h-10 flex items-center justify-center bg-slate-50 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-xl border border-slate-200 hover:border-red-200 transition-all">
-                          <Trash2 size={18} />
-                        </button>
+                        <div className="flex items-center gap-1 text-xs text-slate-500 font-medium">
+                          <MapPin size={12} className="text-slate-400" />
+                          <span className="truncate max-w-[120px]">{prop.address || prop.city || 'No address'}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Middle: Occupancy */}
+                  <div className="flex-1 w-full md:w-auto px-4 md:border-l border-slate-100">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold">
+                        <Users size={14} className="text-slate-400" />
+                        <span><strong className="text-slate-700">{occupied}</strong> / {total} Occupied</span>
+                      </div>
+                      <span className="text-xs font-bold text-slate-700">{Math.round(occupancyRate)}%</span>
+                    </div>
+                    <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden shadow-inner">
+                      <div 
+                        className={`h-full rounded-full relative ${isFullyOccupied ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 'bg-gradient-to-r from-blue-400 to-indigo-500'}`}
+                        style={{ width: `${occupancyRate}%`, transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {/* Right: Revenue & Actions */}
+                  <div className="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto min-w-[200px] md:border-l border-slate-100 md:pl-6">
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5"><TrendingUp size={12} className="inline mr-1" /> Rev</p>
+                      <p className="font-extrabold text-lg text-slate-800">₹{Number(prop.revenue || 0).toLocaleString('en-IN')}</p>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <button className="w-9 h-9 flex items-center justify-center bg-white hover:bg-blue-50 text-slate-400 hover:text-blue-600 rounded-lg border border-slate-200 hover:border-blue-200 transition-all shadow-sm">
+                        <Edit size={16} />
+                      </button>
+                      <button className="w-9 h-9 flex items-center justify-center bg-white hover:bg-red-50 text-slate-400 hover:text-red-600 rounded-lg border border-slate-200 hover:border-red-200 transition-all shadow-sm">
+                        <Trash2 size={16} />
+                      </button>
+                      <button className="w-9 h-9 flex items-center justify-center bg-white hover:bg-slate-50 text-slate-400 hover:text-slate-600 rounded-lg border border-slate-200 transition-all shadow-sm">
+                        <MoreVertical size={16} />
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
               );
             })}

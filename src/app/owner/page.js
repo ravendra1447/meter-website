@@ -230,49 +230,62 @@ export default function OwnerDashboard() {
               </Link>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="flex flex-col gap-4">
               {properties.map(p => {
                 const ptId = p.property_tenant_id;
                 const isPaid = p.bill_status === 'paid';
                 return (
-                  <div key={p.id || Math.random()} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 group">
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="flex gap-4">
-                        <div className={`p-4 rounded-2xl ${isPaid ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-500'} transition-colors`}>
-                          <Building2 size={24} />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-lg text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-1">{p.name || 'Unnamed Property'}</h3>
-                          <p className="text-sm text-slate-500 flex items-center gap-1.5 mt-1">
-                            <User size={14} className="text-slate-400" /> {p.tenant_name || 'Vacant'}
+                  <div key={p.id || Math.random()} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col md:flex-row items-center justify-between gap-6">
+                    
+                    {/* Left: Property Info */}
+                    <div className="flex items-center gap-4 flex-1 w-full min-w-[250px]">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${isPaid ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-500'} transition-colors`}>
+                        <Building2 size={24} />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-1">{p.name || 'Unnamed Property'}</h3>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="inline-flex items-center bg-slate-50 border border-slate-200 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+                            {p.property_code || 'N/A'}
+                          </span>
+                          <p className="text-xs text-slate-500 flex items-center gap-1 font-medium">
+                            <User size={12} className="text-slate-400" /> {p.tenant_name || 'Vacant'}
                           </p>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="bg-slate-50 rounded-2xl p-4 flex justify-between items-center mb-4 border border-slate-100/50">
+                    {/* Middle: Amount & Status */}
+                    <div className="flex items-center justify-between md:justify-center gap-6 w-full md:w-auto md:border-l border-slate-100 md:px-6">
                       <div>
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Due Amount</p>
-                        <p className={`font-extrabold text-2xl ${isPaid ? 'text-green-600' : 'text-slate-800'}`}>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Due Amount</p>
+                        <p className={`font-extrabold text-xl ${isPaid ? 'text-green-600' : 'text-slate-800'}`}>
                           ₹{Number(p.bill_amount || 0).toLocaleString('en-IN')}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${isPaid ? 'bg-green-100 text-green-700 ring-1 ring-green-500/20' : 'bg-red-100 text-red-700 ring-1 ring-red-500/20'}`}>
+                      <div className="text-right flex flex-col items-end">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${isPaid ? 'bg-green-100 text-green-700 ring-1 ring-green-500/20' : 'bg-red-100 text-red-700 ring-1 ring-red-500/20'}`}>
                           {p.bill_status_label || 'Due'}
                         </span>
-                        <p className="text-xs text-slate-400 mt-2 font-medium">{p.property_code || 'N/A'}</p>
                       </div>
                     </div>
 
-                    {ptId && !isPaid && (
-                      <button
-                        onClick={() => sendReminder(ptId)}
-                        className="w-full py-3 bg-white border border-rose-200 text-rose-600 rounded-xl text-sm font-bold hover:bg-rose-50 hover:border-rose-300 transition-all flex items-center justify-center gap-2 group-hover:shadow-sm"
-                      >
-                        <BellRing size={16} className="group-hover:animate-wiggle" /> Send Payment Reminder
-                      </button>
-                    )}
+                    {/* Right: Actions */}
+                    <div className="w-full md:w-auto md:border-l border-slate-100 md:pl-6 shrink-0 flex justify-end">
+                      {ptId && !isPaid ? (
+                        <button
+                          onClick={() => sendReminder(ptId)}
+                          className="px-4 py-2 bg-white border border-rose-200 text-rose-600 rounded-lg text-xs font-bold hover:bg-rose-50 hover:border-rose-300 transition-all flex items-center justify-center gap-2 group-hover:shadow-sm"
+                        >
+                          <BellRing size={14} className="group-hover:animate-wiggle" /> Send Reminder
+                        </button>
+                      ) : (
+                         <div className="px-4 py-2 text-xs font-bold text-slate-400 flex items-center gap-2">
+                           <CheckCircle2 size={14} className="text-green-500" /> Settled
+                         </div>
+                      )}
+                    </div>
+
                   </div>
                 );
               })}
