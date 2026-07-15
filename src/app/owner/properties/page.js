@@ -3,6 +3,7 @@
 import { Building, MapPin, Users, Plus, Search, MoreVertical, Edit, Trash2, Home, TrendingUp, CheckCircle2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
+import Link from "next/link";
 
 export default function PropertiesPage() {
   const [search, setSearch] = useState("");
@@ -48,9 +49,9 @@ export default function PropertiesPage() {
             </h1>
             <p className="text-slate-500 mt-2 font-medium">Manage all your rental properties and units in one place.</p>
           </div>
-          <button className="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-bold shadow-sm transition-all duration-300">
+          <Link href="/owner/properties/add" className="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-bold shadow-sm transition-all duration-300">
             <Plus size={20} /> Add Property
-          </button>
+          </Link>
         </div>
 
         {/* Search and Filter */}
