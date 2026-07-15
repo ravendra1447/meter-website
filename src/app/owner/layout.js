@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, Users, Building, LogOut, Bell, Banknote, Bluetooth, PieChart, Zap } from "lucide-react";
+import { LayoutDashboard, Users, Building, LogOut, Bell, Banknote, Bluetooth, PieChart, Zap, FileText } from "lucide-react";
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -47,6 +47,7 @@ export default function OwnerLayout({ children }) {
     { name: 'Tenant Meters', href: '/owner/meters', icon: Bluetooth },
     { name: 'Tenant Helpdesk', href: '/owner/complaints', icon: Zap },
     { name: 'Payment History', href: '/owner/payments', icon: Banknote },
+    { name: 'Generate Bill', href: '/owner/bills/create', icon: FileText },
     { name: 'Expenses & PnL', href: '/owner/expenses', icon: PieChart },
     { name: 'Reports & Analytics', href: '/owner/reports', icon: PieChart },
   ];
