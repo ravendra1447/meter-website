@@ -7,13 +7,17 @@ import {
   Printer, ArrowLeft, Zap, Droplets, Banknote, HelpCircle, AlertCircle, Wrench, QrCode
 } from 'lucide-react';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 export default function CreateBillPage() {
   const [properties, setProperties] = useState([]);
+  const [tenants, setTenants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [tenantsLoading, setTenantsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     propertyId: '',
+    tenantId: '',
     tenantName: '',
     roomNo: '',
     rentAmount: '',
@@ -25,7 +29,7 @@ export default function CreateBillPage() {
     previousDues: '',
     maintenanceCharges: '',
     lateFees: '',
-    upiId: '', // Added UPI ID for QR code
+    upiId: '', 
     billDate: new Date().toISOString().split('T')[0],
     dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
   });
@@ -41,12 +45,61 @@ export default function CreateBillPage() {
         }
       } catch (err) {
         console.error('Failed to load properties', err);
+        toast.error("Failed to load properties");
       } finally {
         setLoading(false);
       }
     };
     fetchProperties();
   }, []);
+
+  // Fetch tenants when property changes
+  useEffect(() => {
+    if (!formData.propertyId) return;
+
+    const fetchPropertyData = async () => {
+      setTenantsLoading(true);
+      try {
+        const response = await api.get(`/owner/properties/${formData.propertyId}/tenants`);
+        const tnts = response.data?.data || [];
+        setTenants(tnts);
+
+        // Auto-fill property defaults
+        const selectedProp = properties.find(p => p.id === Number(formData.propertyId));
+        if (selectedProp) {
+          setFormData(prev => ({
+            ...prev,
+            rentAmount: selectedProp.monthly_rent || prev.rentAmount,
+            waterCharges: selectedProp.water_charges || prev.waterCharges,
+            maintenanceCharges: selectedProp.maintenance_charges || prev.maintenanceCharges,
+            tenantId: tnts.length > 0 ? tnts[0].id : '',
+          }));
+        }
+      } catch (err) {
+        console.error('Failed to load tenants', err);
+        toast.error("Failed to load tenants for this property");
+      } finally {
+        setTenantsLoading(false);
+      }
+    };
+
+    fetchPropertyData();
+  }, [formData.propertyId, properties]);
+
+  // Auto-fill tenant name when tenant is selected
+  useEffect(() => {
+    if (formData.tenantId) {
+      const selectedTenant = tenants.find(t => t.id === Number(formData.tenantId));
+      if (selectedTenant) {
+        setFormData(prev => ({
+          ...prev,
+          tenantName: selectedTenant.tenant?.name || '',
+          roomNo: selectedTenant.property_code || prev.roomNo, // fallback to property code or empty
+        }));
+      }
+    }
+  }, [formData.tenantId, tenants]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,11 +132,10 @@ export default function CreateBillPage() {
     window.print();
   };
 
-  const selectedProperty = properties.find((p) => p.id === formData.propertyId) || { name: 'N/A', address: 'N/A' };
+  const selectedProperty = properties.find((p) => p.id === Number(formData.propertyId)) || { name: 'N/A', address: 'N/A' };
   const elec = calculateElectricityCharges();
   const total = calculateTotal();
 
-  // Construct UPI URL for QR code
   const upiUrl = formData.upiId ? `upi://pay?pa=${formData.upiId}&pn=${encodeURIComponent(selectedProperty.name)}&am=${total.toFixed(2)}&cu=INR` : '';
 
   return (
@@ -138,9 +190,13 @@ export default function CreateBillPage() {
           
           {/* Property & Tenant Details */}
           <div className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden p-6 hover:border-blue-500/30 transition-colors">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <Building2 className="text-blue-500" /> Property & Tenant
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <Building2 className="text-blue-500" /> Property & Tenant
+              </h2>
+              {tenantsLoading && <span className="text-xs font-medium text-blue-500 bg-blue-50 px-2 py-1 rounded-full animate-pulse">Auto-filling data...</span>}
+            </div>
+            
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-1">Select Property</label>
@@ -161,13 +217,33 @@ export default function CreateBillPage() {
                   )}
                 </select>
               </div>
+
+              <div>
+                <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-1">Select Tenant</label>
+                <select
+                  name="tenantId"
+                  value={formData.tenantId}
+                  onChange={handleChange}
+                  className="w-full bg-[var(--background)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  disabled={tenantsLoading || tenants.length === 0}
+                >
+                  {tenants.length === 0 ? (
+                    <option value="">No tenants found for this property</option>
+                  ) : (
+                    tenants.map((t) => (
+                      <option key={t.id} value={t.id}>{t.tenant?.name} ({t.tenant?.mobile})</option>
+                    ))
+                  )}
+                </select>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-1">Tenant Name</label>
                   <input type="text" name="tenantName" value={formData.tenantName} onChange={handleChange} className="w-full bg-[var(--background)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50" placeholder="e.g. Rahul Kumar" />
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-1">Room No</label>
+                  <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-1">Room No / Code</label>
                   <input type="text" name="roomNo" value={formData.roomNo} onChange={handleChange} className="w-full bg-[var(--background)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50" placeholder="e.g. 101" />
                 </div>
               </div>
@@ -261,7 +337,7 @@ export default function CreateBillPage() {
             <div>
               <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Billed To</p>
               <p className="font-bold text-lg text-gray-800">{formData.tenantName || 'Tenant Name'}</p>
-              <p className="text-gray-600 font-medium">Room: <span className="font-bold text-gray-800">{formData.roomNo || 'N/A'}</span></p>
+              <p className="text-gray-600 font-medium">Room/Unit: <span className="font-bold text-gray-800">{formData.roomNo || 'N/A'}</span></p>
             </div>
             <div className="text-right flex gap-8">
                <div>
@@ -305,13 +381,15 @@ export default function CreateBillPage() {
                 <td className="py-4 text-right font-bold text-gray-900">₹{elec.charges.toFixed(2)}</td>
               </tr>
 
-              <tr className="border-b border-gray-100">
-                <td className="py-4">
-                  <p className="font-bold text-gray-900">Water Charges</p>
-                </td>
-                <td className="py-4 text-right">-</td>
-                <td className="py-4 text-right font-bold text-gray-900">₹{Number(formData.waterCharges || 0).toFixed(2)}</td>
-              </tr>
+              {parseFloat(formData.waterCharges) > 0 && (
+                <tr className="border-b border-gray-100">
+                  <td className="py-4">
+                    <p className="font-bold text-gray-900">Water Charges</p>
+                  </td>
+                  <td className="py-4 text-right">-</td>
+                  <td className="py-4 text-right font-bold text-gray-900">₹{Number(formData.waterCharges || 0).toFixed(2)}</td>
+                </tr>
+              )}
 
               {/* Maintenance */}
               {parseFloat(formData.maintenanceCharges) > 0 && (
